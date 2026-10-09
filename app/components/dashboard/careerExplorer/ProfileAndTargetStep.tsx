@@ -82,8 +82,8 @@ export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, is
           <Target className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
           
           {/* [${lang.code.toUpperCase()}] */}
-          <select value={formData.langauge}  required
-           onChange={(e) => updateForm({ langauge: e.target.value as any })}
+          <select value={formData.language}  required
+           onChange={(e) => updateForm({ language: e.target.value as any })}
             className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium 
             transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
             isDark ? 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500'

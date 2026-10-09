@@ -3,12 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from '@/app/context/ThemeContext'; 
 import { Menu, Sun, Moon, Bell, Sparkles, ChevronDown,  Settings, 
 LogOut, HelpCircle, PlusCircle,
-User,
-AlertCircle,
-Clock, } from 'lucide-react';
+User,Clock, } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 interface TopbarProps {
   onOpenMobileSidebar: () => void;
@@ -19,6 +18,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const token = Cookies.get('accessToken')
+  const router = useRouter();
  
   
     
