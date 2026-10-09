@@ -1,27 +1,36 @@
 export type ExperienceLevel = 
-  | 'student_intern' 
-  | 'recent_graduate' 
-  | 'entry_level' 
-  | 'mid_level' 
-  | 'senior_lead' 
-  | 'executive';
+  | "STUDENT_INTERN"
+  | "RECENT_GRADUATE"
+  | "ENTRY_LEVEL"
+  | "MID_LEVEL"
+  | "SENIOR"
+  | "STAFF_PRINCIPAL"
+  | "EXECUTIVE";
 
-export type WorkArrangement = 'remote_global' | 'hybrid' | 'onsite' | 'relocation';
+
+export type WorkArrangement = 
+  | "REMOTE"
+  | "HYBRID"
+  | "ON_SITE"
+  | "OPEN_TO_RELOCATION";
 
 export type InterviewFocus = 
-  | 'technical_coding' 
-  | 'system_design' 
-  | 'behavioral_star' 
-  | 'case_study' 
-  | 'hr_screening' 
-  | 'culture_fit'
-  | 'domain_knowledge';
+  | "TECHNICAL_LIVE_CODING"
+  | "SYSTEM_DESIGN_ARCHITECTURE"
+  | "BEHAVIORAL_STAR"
+  | "DOMAIN_SPECIFIC"
+  | "CASE_STUDY_PROBLEM_SOLVING"
+  | "HR_RECRUITER_SCREENING";
 
-export type AiInterviewerPersona = 'supportive_coach' | 'strict_technical_lead' | 'hr_recruiter' | 'faang_style';
+export type AiInterviewerPersona = 
+  | "SUPPORTIVE_COACH"
+  | "STRICT_TECH_LEAD"
+  | "TOP_TECH_ASSESSOR"
+  | "TALENT_ACQUISITION";
 
 export interface JobPrepFormData {
   // Step 1: Role & Target Market
-  langauge:string;
+  language:string;
   targetRole: string;
   industryDomain: string;
   experienceLevel: ExperienceLevel;

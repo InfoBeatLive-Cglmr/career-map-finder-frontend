@@ -6,7 +6,7 @@ export type InquiryReason =
   | 'Partnership / Institutional Onboarding';
 
 export interface ContactFormData {
-  fullName: string;
+  name: string;
   email: string;
   reason: InquiryReason;
   message: string;

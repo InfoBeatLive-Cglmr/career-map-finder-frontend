@@ -7,16 +7,34 @@ import { useTheme } from '@/app/context/ThemeContext';
 import ExamPracticePageMain from '@/app/components/dashboard/assessments/exams/ExamPracticePageMain';
 import InterviewPracticePageMain from '@/app/components/dashboard/jobPreparation/interviews/InterviewCatalogPage';
 import CareerExplorerCardPage from '@/app/components/dashboard/careerExplorer/reports/CareerExplorerMain';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 type FilterTab = 'careers' | 'interviews' | 'assessments';
 
 export default function DashboardMainPage() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<FilterTab>('careers');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentTime, setCurrentTime] = useState<string>('');
+
+  
+  
+    useEffect(() => {
+      
+        const userId =  Cookies.get('userId');
+        const token = Cookies.get('accessToken');
+        const isAuthenticated = Cookies.get('isAuthenticated');
+  
+        if (!userId && !token && !isAuthenticated) {
+          router.push('/auth/signin');
+        } 
+      
+    }, []);
+
 
   // Clock state renderer
   useEffect(() => {

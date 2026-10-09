@@ -1,13 +1,13 @@
 import React from 'react';
-import { JobPrepFormData, ExperienceLevel, WorkArrangement } from './types';
 import { EXPERIENCE_LEVELS, WORK_ARRANGEMENTS } from './constants';
 import { COUNTRIES } from '../assessments/constants';
 import { Briefcase, Globe, Building, MapPin, Plane, Check, Target } from 'lucide-react';
 import { LANGUAGES } from '../assessments/languages';
+import { CreateInterviewSessionInput, WorkArrangement } from '@/app/utils/job-preparation/interviewSession';
 
 interface Props {
-  formData: JobPrepFormData;
-  updateForm: (fields: Partial<JobPrepFormData>) => void;
+  formData: CreateInterviewSessionInput;
+  updateForm: (fields: Partial<CreateInterviewSessionInput>) => void;
   isDark: boolean;
 }
 
@@ -28,10 +28,10 @@ export const TargetRoleStep: React.FC<Props> = ({ formData, updateForm, isDark }
 
   const getWorkIcon = (id: WorkArrangement) => {
     switch (id) {
-      case 'remote_global': return <Globe className="w-5 h-5" />;
-      case 'hybrid': return <Building className="w-5 h-5" />;
-      case 'onsite': return <MapPin className="w-5 h-5" />;
-      case 'relocation': return <Plane className="w-5 h-5" />;
+      case "REMOTE": return <Globe className="w-5 h-5" />;
+      case "HYBRID": return <Building className="w-5 h-5" />;
+      case "ON_SITE": return <MapPin className="w-5 h-5" />;
+      case "OPEN_TO_RELOCATION": return <Plane className="w-5 h-5" />;
     }
   };
 
@@ -48,8 +48,8 @@ export const TargetRoleStep: React.FC<Props> = ({ formData, updateForm, isDark }
             <Target className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
                     
                     {/* [${lang.code.toUpperCase()}] */}
-          <select value={formData.langauge}  required
-            onChange={(e) => updateForm({ langauge: e.target.value as any })}
+          <select value={formData.language}  required
+            onChange={(e) => updateForm({ language: e.target.value as any })}
             className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium  
             transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
             isDark ? 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500'
@@ -76,8 +76,8 @@ export const TargetRoleStep: React.FC<Props> = ({ formData, updateForm, isDark }
             <input
               type="text"
               placeholder="e.g. Senior Backend Engineer, Product Manager"
-              value={formData.targetRole}
-              onChange={(e) => updateForm({ targetRole: e.target.value })}
+              value={formData.targetJobTitle}
+              onChange={(e) => updateForm({ targetJobTitle: e.target.value })}
               className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium 
                 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDark 
@@ -114,12 +114,12 @@ export const TargetRoleStep: React.FC<Props> = ({ formData, updateForm, isDark }
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {EXPERIENCE_LEVELS.map((lvl) => {
-            const isSelected = formData.experienceLevel === lvl.id;
+            const isSelected = formData.careerStage === lvl.id;
             return (
               <button
                 key={lvl.id}
                 type="button"
-                onClick={() => updateForm({ experienceLevel: lvl.id })}
+                onClick={() => updateForm({ careerStage: lvl.id })}
                 className={`p-4 rounded-xl text-left border transition-all flex flex-col justify-between ${
                   isSelected
                     ? 'border-blue-500 ring-2 ring-blue-500/30 bg-blue-500/10'
@@ -151,12 +151,12 @@ export const TargetRoleStep: React.FC<Props> = ({ formData, updateForm, isDark }
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {WORK_ARRANGEMENTS.map((wa) => {
-            const isSelected = formData.workArrangement === wa.id;
+            const isSelected = formData.workArrangement.includes(wa.id);
             return (
               <button
                 key={wa.id}
                 type="button"
-                onClick={() => updateForm({ workArrangement: wa.id })}
+                onClick={() => updateForm({ workArrangement: [...formData.workArrangement, wa.id] })}
                 className={`p-3 rounded-xl border flex flex-col items-center justify-center 
                   gap-2 text-center transition-all ${
                   isSelected

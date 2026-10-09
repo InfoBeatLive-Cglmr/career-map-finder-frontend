@@ -1,74 +1,107 @@
+// utils/feedback.ts
+import { API_BASE_URL } from "./auth";
 
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { getAccessToken } from './auth';
-import { BASE_URL } from './auth';
+// ==========================================
+// TYPES
+// ==========================================
 
-const api = axios.create({
-    baseURL: BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
-
-api.interceptors.request.use(
-    async (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-        try {
-            const accessToken = getAccessToken();
-            if (accessToken) {
-                config.headers.Authorization = `Bearer ${accessToken}`;
-            }
-        } catch (error) {
-            console.error('Error retrieving access token:', error);
-        }
-        return config;
-    },
-    (error: AxiosError): Promise<AxiosError> => {
-        return Promise.reject(error);
-    }
-);
-
-export interface FeedbackData {
-    name: string;
-    email: string;
-    reason: string;
-    statement: string;
-    rating: number;
+export interface Feedback {
+  id: string;
+  fullName: string;
+  email?: string | null;
+  reason: string;
+  statement: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface FeedbackResponse {
-    success: boolean;
-    newFeedback?: any;
-    feedbacks?: any[];
-    feedback?: any;
-    updatedFeedback?: any;
-    message?: string;
-    error?: string;
+export interface CreateFeedbackInput {
+  fullName: string;
+  email?: string;
+  reason: string;
+  statement: string;
+  rating: number;
 }
 
-export const feedback = {
-   
-    create: async (data: FeedbackData): Promise<FeedbackResponse> => {
-        const response = await api.post<FeedbackResponse>('/account/feedback/feedback/create', data);
-        return response.data;
-    },
-    
-    getAll: async (): Promise<FeedbackResponse> => {
-        const response = await api.get<FeedbackResponse>('/account/feedback/feedback/get-all');
-        return response.data;
-    },
+export interface UpdateFeedbackInput {
+  fullName?: string;
+  email?: string;
+  reason?: string;
+  statement?: string;
+  rating?: number;
+}
 
-    getById: async (id: string): Promise<FeedbackResponse> => {
-        const response = await api.get<FeedbackResponse>(`/account/feedback/feedback/get/${id}`);
-        return response.data;
-    },
+// ==========================================
+// HELPER FOR FETCH & ERROR HANDLING
+// ==========================================
 
-    update: async (id: string, data: Partial<FeedbackData>): Promise<FeedbackResponse> => {
-        const response = await api.put<FeedbackResponse>(`/account/feedback/feedback/update/${id}`, data);
-        return response.data;
-    },
+async function handleResponse<T>(response: Response): Promise<T> {
+  // 204 No Content handling (for delete)
+  if (response.status === 204) {
+    return { success: true } as unknown as T;
+  }
 
-    delete: async (id: string): Promise<FeedbackResponse> => {
-        const response = await api.delete<FeedbackResponse>(`/account/feedback/feedback/delete/${id}`);
-        return response.data;
-    },
+  const data = await response.json();
+
+  if (!response.ok || data.success === false) {
+    const errorMessage = data.error || data.message || `Request failed with status ${response.status}`;
+    throw new Error(errorMessage);
+  }
+
+  return data;
+}
+
+// ==========================================
+// API FUNCTIONS
+// ==========================================
+
+export const feedbackApi = {
+  
+  // Create new feedback
+  async create(data: CreateFeedbackInput): Promise<{ success: boolean; newFeedback: Feedback }> {
+    const res = await fetch(`${API_BASE_URL}/account/feedback/feedbacks/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<{ success: boolean; newFeedback: Feedback }>(res);
+  },
+
+  // Get all feedback records
+  async getAll(): Promise<{ success: boolean; feedbacks: Feedback[] }> {
+    const res = await fetch(`${API_BASE_URL}/account/feedback/feedbacks/get-all`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    return handleResponse<{ success: boolean; feedbacks: Feedback[] }>(res);
+  },
+
+  // Get single feedback by ID
+  async getById(id: string): Promise<{ success: boolean; feedback: Feedback }> {
+    const res = await fetch(`${API_BASE_URL}/account/feedback/feedbacks/get/${id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    return handleResponse<{ success: boolean; feedback: Feedback }>(res);
+  },
+
+  // Update feedback by ID
+  async update(id: string, data: UpdateFeedbackInput): Promise<{ success: boolean; updatedFeedback: Feedback }> {
+    const res = await fetch(`${API_BASE_URL}/account/feedback/feedbacks/update/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<{ success: boolean; updatedFeedback: Feedback }>(res);
+  },
+
+  // Delete feedback by ID
+  async delete(id: string): Promise<{ success: boolean }> {
+    const res = await fetch(`${API_BASE_URL}/account/feedback/feedbacks/delete/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+    return handleResponse<{ success: boolean }>(res);
+  },
 };

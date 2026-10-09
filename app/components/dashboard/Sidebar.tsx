@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '../../context/ThemeContext';
@@ -25,6 +25,8 @@ import {
   BracesIcon,
   BriefcaseBusiness
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 interface NavItem {
   title: string;
@@ -62,7 +64,7 @@ const NAV_ITEMS: NavItem[] = [
     rel:"",
   },
   {
-    title: 'Job Preparation',
+    title: 'Interview Practice',
     href: '/dashboard/job-preparation',
     icon: BriefcaseBusiness,
     badge: '',
@@ -137,7 +139,23 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { theme } = useTheme();
   const pathname = usePathname();
+  const router = useRouter();
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+
+  
+    
+      useEffect(() => {
+        
+          const userId =  Cookies.get('userId');
+          const token = Cookies.get('accessToken');
+          const isAuthenticated = Cookies.get('isAuthenticated');
+    
+          if (!userId && !token && !isAuthenticated) {
+            router.push('/auth/signin');
+          } 
+        
+      }, []);
+  
 
   const toggleSubmenu = (title: string) => {
     setOpenSubmenu((prev) => (prev === title ? null : title));
@@ -350,11 +368,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       <div
         className={`p-3 m-3 rounded-lg border shrink-0 ${
           isDark ? ' border-slate-700' : ' border-slate-300' }`} >
-       
+        <a href="/dashboard/alert">
         <button className="w-full py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 
-        text-white text-xs font-semibold shadow-sm transition-colors">
-          Career Map Finder AI
-        </button>
+        text-white text-[12px] font-semibold shadow-sm transition-colors">
+         Create New Alert
+        </button></a>
       </div>
 
       {/* Profile Footer */}
@@ -374,14 +392,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 isDark ? 'text-white' : 'text-slate-900'
               }`}
             >
-              Rahul Sharma
+              Academic Path &
             </span>
             <span
               className={`text-[10px] flex items-center gap-1 ${
-                isDark ? 'text-slate-400' : 'text-slate-500' }`} >
+                isDark ? 'text-indigo-500' : 'text-indigo-600' }`} >
               
                <button className="w-full rounded-lg borde text-xs font-bold shadow-sm transition-colors">
-              Explorer (Free) </button>
+              Career Discovery </button>
 
             </span>
           </div>

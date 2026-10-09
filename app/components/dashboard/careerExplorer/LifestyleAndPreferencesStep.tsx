@@ -1,7 +1,7 @@
 import React from 'react';
-import { CareerExplorerFormData, CareerPriority } from './types';
+import { CareerExplorerFormData } from './types';
 import { CAREER_PRIORITIES } from './constants';
-import { Check, HeartHandshake, Briefcase, Clock, ShieldCheck } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 interface Props {
   formData: CareerExplorerFormData;
@@ -19,12 +19,12 @@ export const LifestyleAndPreferencesStep: React.FC<Props> = ({ formData, updateF
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {CAREER_PRIORITIES.map((p) => {
-            const isSelected = formData.primaryCareerPriority === p.id;
+            const isSelected = formData.primaryPriority === p.id;
             return (
               <button
                 key={p.id}
                 type="button"
-                onClick={() => updateForm({ primaryCareerPriority: p.id })}
+                onClick={() => updateForm({ primaryPriority: p.id })}
                 className={`p-4 rounded-xl border text-left transition-all ${
                   isSelected
                     ? 'border-blue-500 ring-2 ring-blue-500/30 bg-blue-500/10'
@@ -57,9 +57,9 @@ export const LifestyleAndPreferencesStep: React.FC<Props> = ({ formData, updateF
             Preferred Work Environment <span className="text-red-500">*</span>
           </label>
           <select
-            value={formData.targetWorkEnvironment}
+            value={formData.preferredWorkEnv}
             required
-            onChange={(e) => updateForm({ targetWorkEnvironment: e.target.value as any })}
+            onChange={(e) => updateForm({ preferredWorkEnv: e.target.value as any })}
             className={`w-full px-4 py-3 rounded-xl border text-sm font-medium 
               focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               isDark 
@@ -80,9 +80,9 @@ export const LifestyleAndPreferencesStep: React.FC<Props> = ({ formData, updateF
             Work Intensity Preference <span className="text-red-500">*</span>
           </label>
           <select
-            value={formData.desiredWorkHours}
+            value={formData.workIntensity}
             required
-            onChange={(e) => updateForm({ desiredWorkHours: e.target.value as any })}
+            onChange={(e) => updateForm({ workIntensity: e.target.value as any })}
             className={`w-full px-4 py-3 rounded-xl border text-sm font-medium focus:outline-none 
               focus:ring-2 focus:ring-blue-500 ${
               isDark 

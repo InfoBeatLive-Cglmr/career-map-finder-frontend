@@ -2,7 +2,7 @@ import React from 'react';
 import { CareerExplorerFormData } from './types';
 import { EDUCATION_LEVELS, ACADEMIC_STREAMS, POPULAR_CAREER_DOMAINS } from './constants';
 import { COUNTRIES } from '../assessments/constants';
-import { Target, MapPin, Sparkles, Check, Globe } from 'lucide-react';
+import { Target, MapPin } from 'lucide-react';
 import { LANGUAGES } from '../assessments/languages';
 
 interface Props {
@@ -12,19 +12,18 @@ interface Props {
 }
 
 export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, isDark }) => {
+
   const toggleTargetCountry = (countryId: string) => {
-    const current = formData.targetCountries;
-    if (countryId === 'global') {
-      updateForm({ targetCountries: ['global'] });
-      return;
-    }
-    const filtered = current.filter((c) => c !== 'global');
-    if (filtered.includes(countryId)) {
-      updateForm({ targetCountries: filtered.filter((c) => c !== countryId) });
-    } else {
-      updateForm({ targetCountries: [...filtered, countryId] });
-    }
-  };
+  const current = formData.targetStudyCountry;
+
+  // if clicking same again → unselect (optional)
+  if (current === countryId) {
+    updateForm({ targetStudyCountry: '' });
+  } else {
+    updateForm({ targetStudyCountry: countryId });
+  }
+  
+};
 
   return (
     <div className="space-y-6">
@@ -35,12 +34,12 @@ export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, is
         </label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {EDUCATION_LEVELS.map((level) => {
-            const isSelected = formData.educationLevel === level.id;
+            const isSelected = formData.journeyStage === level.id;
             return (
               <button
                 key={level.id}
                 type="button"
-                onClick={() => updateForm({ educationLevel: level.id })}
+                onClick={() => updateForm({ journeyStage: level.id })}
                 className={`p-4 rounded-xl text-left border transition-all relative flex flex-col justify-between ${
                   isSelected
                     ? 'border-blue-500 ring-2 ring-blue-500/30 bg-blue-500/10'
@@ -112,8 +111,8 @@ export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, is
           <input
             type="text"
             placeholder="e.g., Software Engineer, Neurosurgeon, Investment Banker, AI Specialist"
-            value={formData.targetRoleOrDomain}
-            onChange={(e) => updateForm({ targetRoleOrDomain: e.target.value })}
+            value={formData.targetRoleOrField}
+            onChange={(e) => updateForm({ targetRoleOrField: e.target.value })}
             className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium 
               transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               isDark 
@@ -133,7 +132,7 @@ export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, is
             <button
               key={domain}
               type="button"
-              onClick={() => updateForm({ targetRoleOrDomain: domain })}
+              onClick={() => updateForm({ targetRoleOrField: domain })}
               className={`text-[11px] px-2.5 py-1 rounded-lg border transition-colors ${
                 isDark
                   ? 'border-slate-700 bg-slate-800/40 text-slate-300 hover:border-slate-500'
@@ -204,9 +203,9 @@ export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, is
           <input
             type="text"
             placeholder="e.g London, New York"
-            value={formData.homeStateOrCity}
+            value={formData.stateCity}
             required
-            onChange={(e) => updateForm({ homeStateOrCity: e.target.value })}
+            onChange={(e) => updateForm({ stateCity: e.target.value })}
             className={`w-full px-4 py-3 rounded-xl border text-sm font-medium 
               focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               isDark 
@@ -220,12 +219,12 @@ export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, is
       {/* Target Countries for Study / Work */}
       <div>
         <label className={`block text-sm font-semibold mb-2 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-          Target Preferred Country to Study or Practice <span className="text-red-500">*</span>
+          Target Preferred Country to Study or Practice(1) <span className="text-red-500">*</span>
         </label>
         <div className={`flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2.5 rounded-xl 
         border ${ isDark ? 'border-slate-700' : 'border-slate-300'}`}>
           {COUNTRIES.slice(0, 200).map((c) => {
-            const isSelected = formData.targetCountries.includes(c.id);
+            const isSelected = formData.targetStudyCountry.includes(c.id);
             return (
               <button
                 key={c.id}

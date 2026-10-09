@@ -1,40 +1,56 @@
 import React, { useState } from 'react';
-import { ExamCategory, DifficultyLevel, ExamFormPayload } from './types';
+import {
+  CreateExamSessionInput,
+  ExamCategory,
+  DifficultyLevel,
+  CreateSessionResponse,
+  examSessionApi,
+} from '../../../utils/assessments/examSession';
+import Cookies from 'js-cookie';
+import { syncUpdateResponsesAndInvalidateCache } from '../settings/InvalidateCache';
 
 export function useCreateExamForm() {
-   const [language, setLangauge] = useState<string>('English');
-  const [examCategory, setExamCategory] = useState<ExamCategory>('academic');
-  const [selectedCountry, setSelectedCountry] = useState<string>('in');
-  const [stateRegion, setStateRegion] = useState<string>('');
-  
+  // Config & Localization
+  const userId =  Cookies.get('userId');
+  const [language, setLanguage] = useState<string>('English');
+  const [category, setCategory] = useState<ExamCategory>('ACADEMIC');
+  const [country, setCountry] = useState<string>('in');
+  const [state, setState] = useState<string>('');
+
   // Academic Form States
-  const [academicExamName, setAcademicExamName] = useState<string>('');
+  const [examName, setExamName] = useState<string>('');
   const [stream, setStream] = useState<string>('Sciences');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [customSubjectInput, setCustomSubjectInput] = useState<string>('');
-  
+
   // Professional Form States
-  const [proDomain, setProDomain] = useState<string>('cloud');
+  const [industry, setIndustry] = useState<string>('cloud');
   const [proExamName, setProExamName] = useState<string>('');
-  const [certBody, setCertBody] = useState<string>('');
+  const [certVendor, setCertVendor] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
 
-  const [course, setCourse] = useState<string>('');
-  const [career, setCareer] = useState<string>('');
-  const [background, setBackgrund] = useState<string>('');
-  
-  // AI Config & Goals
-  const [examPurpose, setExamPurpose] = useState<string>('admission');
-  const [targetScore, setTargetScore] = useState<string>('');
-  const [difficultyLevel, setDifficultyLevel] = useState<DifficultyLevel>('intermediate');
-  const [additionalNotes, setAdditionalNotes] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  // Goals, Career & Background
+  const [targetProgram, setTargetProgram] = useState<string>('');
+  const [targetCareer, setTargetCareer] = useState<string>('');
+  const [academicBackground, setAcademicBackground] = useState<string>('');
 
-  const toggleSubject = (subject: string) => {
-    if (selectedSubjects.includes(subject)) {
-      setSelectedSubjects(selectedSubjects.filter((s) => s !== subject));
+  // AI & Session Configuration
+  const [primaryObjective, setPrimaryObjective] = useState<string>('admission');
+  const [targetScore, setTargetScore] = useState<string>('80');
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>('STANDARD');
+  const [examDescription, setExamDescription] = useState<string>('');
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(60);
+  const [questionCountOverride, setQuestionCountOverride] = useState<number>(10);
+
+  // Status and Errors
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  const toggleSubject = (subj: string) => {
+    if (selectedSubjects.includes(subj)) {
+      setSelectedSubjects(selectedSubjects.filter((s) => s !== subj));
     } else {
-      setSelectedSubjects([...selectedSubjects, subject]);
+      setSelectedSubjects([...selectedSubjects, subj]);
     }
   };
 
@@ -49,30 +65,55 @@ export function useCreateExamForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent, onSubmitSuccess?: (payload: ExamFormPayload) => void) => {
+  const handleSubmit = async (
+    e: React.FormEvent,
+    onSubmitSuccess?: (response: CreateSessionResponse) => void
+  ) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setApiError(null);
 
-    const payload: ExamFormPayload = {
-      category: examCategory,
-      location: { country: selectedCountry, state: stateRegion },
-      examDetails: examCategory === 'academic' 
-        ? { examName: academicExamName, stream, subjects: selectedSubjects }
-        : { domain: proDomain, certBody, examName: proExamName },
-      config: {
-        purpose: examPurpose,
-        targetScore,
-        difficultyLevel,
-        additionalNotes,
-      }
+    // Compute subject value based on active category
+    const finalSubject =
+      category === 'ACADEMIC'
+        ? selectedSubjects.length > 0
+          ? selectedSubjects.join(', ')
+          : subject || 'General'
+        : subject || industry || 'General Domain';
+
+    const payload: CreateExamSessionInput = {
+      userId: userId || 'DEFAULT_USER_ID', // Replace with active auth state if available
+      language,
+      category,
+      country,
+      state,
+      examName: category === 'ACADEMIC' ? examName : proExamName,
+      stream: category === 'ACADEMIC' ? stream : undefined,
+      subject: finalSubject,
+      targetProgram: targetProgram || undefined,
+      targetCareer: targetCareer || undefined,
+      primaryObjective: primaryObjective || undefined,
+      industry: category === 'PROFESSIONAL' ? industry : undefined,
+      certVendor: category === 'PROFESSIONAL' ? certVendor : undefined,
+      examDescription: examDescription || undefined,
+      academicBackground: academicBackground || undefined,
+      difficulty,
+      targetScore: Number(targetScore) || 80,
+      timeLimitMinutes: Number(timeLimitMinutes) || 60,
+      questionCountOverride: Number(questionCountOverride) || 10,
     };
 
     try {
-      // Simulate API call to AI generator engine
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      if (onSubmitSuccess) onSubmitSuccess(payload);
-    } catch (error) {
-      console.error('Error submitting exam parameters:', error);
+      const response = await examSessionApi.createSession(payload);
+      if (onSubmitSuccess) {
+        onSubmitSuccess(response);
+      }
+
+      syncUpdateResponsesAndInvalidateCache();
+
+    } catch (err: any) {
+      console.error('Error creating exam session:', err);
+      setApiError(err.message || 'Failed to create exam session.');
     } finally {
       setIsSubmitting(false);
     }
@@ -81,48 +122,54 @@ export function useCreateExamForm() {
   return {
     state: {
       language,
-      examCategory,
-      selectedCountry,
-      stateRegion,
-      academicExamName,
+      category,
+      country,
+      state,
+      examName,
       stream,
       subject,
-      course,
-      career, 
+      targetProgram,
+      targetCareer,
       selectedSubjects,
       customSubjectInput,
-      proDomain,
+      industry,
       proExamName,
-      certBody,
-      examPurpose,
+      certVendor,
+      primaryObjective,
       targetScore,
-      difficultyLevel,
-      additionalNotes,
-      background, 
+      difficulty,
+      examDescription,
+      academicBackground,
+      timeLimitMinutes,
+      questionCountOverride,
       isSubmitting,
+      apiError,
     },
     actions: {
-      setLangauge,
-      setExamCategory,
-      setSelectedCountry,
-      setStateRegion,
-      setAcademicExamName,
+      setLanguage,
+      setCategory,
+      setCountry,
+      setState,
+      setExamName,
       setStream,
       setSubject,
-      setCourse,
-      setCareer,
+      setTargetProgram,
+      setTargetCareer,
       setCustomSubjectInput,
-      setProDomain,
+      setIndustry,
       setProExamName,
-      setCertBody,
-      setExamPurpose,
+      setCertVendor,
+      setPrimaryObjective,
       setTargetScore,
-      setDifficultyLevel,
-      setAdditionalNotes,
-      setBackgrund,
+      setDifficulty,
+      setExamDescription,
+      setAcademicBackground,
+      setTimeLimitMinutes,
+      setQuestionCountOverride,
       toggleSubject,
       handleAddCustomSubject,
       handleSubmit,
-    }
+    },
   };
 }
+

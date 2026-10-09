@@ -1,13 +1,12 @@
+
 'use client';
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Award, BrainCircuit, CheckCircle2, ChevronRight, Globe, GraduationCap, Layers, MapPin, Target } from 'lucide-react';
+import { AlertCircle, ArrowRight, Award, BrainCircuit, CheckCircle2, ChevronRight, Globe, GraduationCap, Layers, MapPin, Target } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 import { useCreateExamForm } from './useCreateExamForm';
-//import { SubjTagInput } from './SubjTagInput';
 import { COUNTRIES, ACADEMIC_EXAMS_BY_COUNTRY, PROFESSIONAL_DOMAINS } from './constants';
-import { DifficultyLevel } from './types';
 import { LANGUAGES } from './languages';
 
 export default function CreateExamForm() {
@@ -16,11 +15,18 @@ export default function CreateExamForm() {
 
   const { state, actions } = useCreateExamForm();
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    actions.handleSubmit(e, (payload) => {
-      console.log('Exam Configuration Payload:', payload);
-      alert('Exam profile saved! AI Engine is generating your tailored study plan.');
-    });
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await actions.handleSubmit(e, async (payload) => {
+        console.log('Exam Configuration Payload:', payload);
+        alert('Exam profile saved! We are creating your tailored exam questions.');
+      });
+    } catch (error) {
+      console.error('Failed to submit exam configuration:', error);
+      alert('Failed to save exam profile. Please try again.');
+    }
   };
 
   return (
@@ -38,10 +44,22 @@ export default function CreateExamForm() {
             to automatically generate relevant past questions, practice tests, and study guides.
           </p>
         </div>
+        
+        
+                {/* Error Alert Display */}
+        {state.apiError && (
+            <div className="p-4 mt-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 flex 
+              items-center gap-3 text-sm font-medium">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span>{state.apiError}</span>
+          </div>
+        )}
+
 
         {/* Form Container */}
         <form onSubmit={handleFormSubmit} className={`p-6 rounded-2xl border shadow-xl backdrop-blur-md transition-all ${
-          isDark ? 'bg-slate-900/80 border-slate-700 shadow-slate-950/50' : 'bg-white/90 border-slate-300 shadow-slate-200/50'
+          isDark ? 'bg-slate-900/80 border-slate-700 shadow-slate-950/50' 
+          : 'bg-white/90 border-slate-300 shadow-slate-200/50'
         }`}>
           
           {/* STEP 1: CATEGORY TOGGLE */}
@@ -52,16 +70,16 @@ export default function CreateExamForm() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <button
                 type="button"
-                onClick={() => actions.setExamCategory('academic')}
+                onClick={() => actions.setCategory('ACADEMIC')}
                 className={`flex items-start gap-4 p-5 rounded-xl border-2 text-left 
                   transition-all relative overflow-hidden ${
-                  state.examCategory === 'academic'
+                  state.category === 'ACADEMIC'
                     ? 'border-indigo-500 bg-indigo-500/5'
                     : isDark ? 'border-slate-700 bg-slate-800/40 hover:border-slate-700' 
                     : 'border-slate-300 bg-slate-50 hover:border-slate-300'
                 }`}
               >
-                <div className={`p-3 rounded-lg ${state.examCategory === 'academic' ? 'bg-indigo-500 text-white' 
+                <div className={`p-3 rounded-lg ${state.category === 'ACADEMIC' ? 'bg-indigo-500 text-white' 
                   : isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
                   <GraduationCap className="w-6 h-6" />
                 </div>
@@ -71,22 +89,22 @@ export default function CreateExamForm() {
                     High school boards, national university entrance tests.
                   </p>
                 </div>
-                {state.examCategory === 'academic' && (
+                {state.category === 'ACADEMIC' && (
                   <CheckCircle2 className="w-5 h-5 text-indigo-500 absolute top-4 right-4" />
                 )}
               </button>
 
               <button
                 type="button"
-                onClick={() => actions.setExamCategory('professional')}
+                onClick={() => actions.setCategory('PROFESSIONAL')}
                 className={`flex items-start gap-4 p-5 rounded-xl border-2 text-left transition-all relative overflow-hidden ${
-                  state.examCategory === 'professional'
+                  state.category === 'PROFESSIONAL'
                     ? 'border-indigo-500 bg-indigo-500/5'
                     : isDark ? 'border-slate-700 bg-slate-800/40 hover:border-slate-700' 
                     : 'border-slate-300 bg-slate-50 hover:border-slate-300'
                 }`}
               >
-                <div className={`p-3 rounded-lg ${state.examCategory === 'professional' ? 'bg-indigo-500 text-white' 
+                <div className={`p-3 rounded-lg ${state.category === 'PROFESSIONAL' ? 'bg-indigo-500 text-white' 
                   : isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
                   <Award className="w-6 h-6" />
                 </div>
@@ -96,7 +114,7 @@ export default function CreateExamForm() {
                     Global industry accreditations e.g (Cybersecurity).
                   </p>
                 </div>
-                {state.examCategory === 'professional' && (
+                {state.category === 'PROFESSIONAL' && (
                   <CheckCircle2 className="w-5 h-5 text-indigo-500 absolute top-4 right-4" />
                 )}
               </button>
@@ -107,7 +125,7 @@ export default function CreateExamForm() {
 
           {/* STEP 2: DYNAMIC PATHS */}
           <AnimatePresence mode="wait">
-            {state.examCategory === 'academic' ? (
+            {state.category === 'ACADEMIC' ? (
               <motion.div
                 key="academic-fields"
                 initial={{ opacity: 0, y: 12 }}
@@ -126,10 +144,10 @@ export default function CreateExamForm() {
                     <label className="block text-xs font-medium mb-1.5">Country / Region <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <select
-                        value={state.selectedCountry}
+                        value={state.country}
                         onChange={(e) => {
-                          actions.setSelectedCountry(e.target.value);
-                          actions.setAcademicExamName('');
+                          actions.setCountry(e.target.value);
+                          actions.setExamName('');
                         }}
                         className={`w-full px-4 py-3 rounded-xl border text-sm appearance-none 
                           outline-none focus:ring-2 focus:ring-indigo-500 transition ${
@@ -155,8 +173,8 @@ export default function CreateExamForm() {
                       <input
                         type="text"
                         placeholder="write your state / province"
-                        value={state.stateRegion}
-                        onChange={(e) => actions.setStateRegion(e.target.value)}
+                        value={state.state}
+                        onChange={(e) => actions.setState(e.target.value)}
                         className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm outline-none 
                           focus:ring-2 focus:ring-indigo-500 transition ${
                           isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -171,13 +189,13 @@ export default function CreateExamForm() {
                 <div>
                   <label className="block text-xs font-medium mb-1.5">Select Exam or Board <span className="text-red-500">*</span></label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                    {(ACADEMIC_EXAMS_BY_COUNTRY[state.selectedCountry] || ACADEMIC_EXAMS_BY_COUNTRY['global']).map((exam) => (
+                    {(ACADEMIC_EXAMS_BY_COUNTRY[state.country] || ACADEMIC_EXAMS_BY_COUNTRY['global']).map((exam) => (
                       <button
                         type="button"
                         key={exam}
-                        onClick={() => actions.setAcademicExamName(exam)}
+                        onClick={() => actions.setExamName(exam)}
                         className={`p-3 text-xs font-medium rounded-xl border text-center transition ${
-                          state.academicExamName === exam
+                          state.examName === exam
                             ? 'border-indigo-500 bg-indigo-500/10 text-indigo-500 font-bold'
                             : isDark ? 'border-slate-700 bg-slate-950/50 hover:bg-slate-800' 
                             : 'border-slate-300 bg-slate-50 hover:bg-slate-100'
@@ -191,8 +209,8 @@ export default function CreateExamForm() {
                     <input
                       type="text"
                       placeholder="Or enter custom exam name..."
-                      value={state.academicExamName}
-                      onChange={(e) => actions.setAcademicExamName(e.target.value)}
+                      value={state.examName}
+                      onChange={(e) => actions.setExamName(e.target.value)}
                       className={`w-full px-4 py-2.5 rounded-xl border text-xs outline-none focus:ring-2
                          focus:ring-indigo-500 transition ${
                         isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -224,17 +242,6 @@ export default function CreateExamForm() {
                   </div>
                 </div>
 
-                {/* SubjTagInput Component */}
-                {/* <SubjTagInput
-                  stream={state.stream}
-                  selectedSubjects={state.selectedSubjects}
-                  customSubjectInput={state.customSubjectInput}
-                  isDark={isDark}
-                  onToggleSubject={actions.toggleSubject}
-                  onCustomInputChange={actions.setCustomSubjectInput}
-                  onAddCustomSubject={actions.handleAddCustomSubject}
-                /> */}
-
               <label className="block text-xs font-medium mb-1.5">
                Target Subject <span className="text-slate-400 font-normal">(Write Only One) <span className="text-red-500">*</span></span>
               </label>
@@ -255,8 +262,8 @@ export default function CreateExamForm() {
                     <input
                       type="text"
                       placeholder="e.g computer science"
-                      value={state.course}
-                      onChange={(e) => actions.setCourse(e.target.value)}
+                      value={state.targetProgram}
+                      onChange={(e) => actions.setTargetProgram(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
                         isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -270,8 +277,8 @@ export default function CreateExamForm() {
                     <input
                       type="text"
                       placeholder="e.g software developer"
-                      value={state.career}
-                      onChange={(e) => actions.setCareer(e.target.value)}
+                      value={state.targetCareer}
+                      onChange={(e) => actions.setTargetCareer(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
                         isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -305,9 +312,9 @@ export default function CreateExamForm() {
                       <button
                         type="button"
                         key={domain.id}
-                        onClick={() => actions.setProDomain(domain.id)}
+                        onClick={() => actions.setIndustry(domain.id)}
                         className={`p-3.5 rounded-xl border text-left transition flex items-center gap-3 ${
-                          state.proDomain === domain.id
+                          state.industry === domain.id
                             ? 'border-indigo-500 bg-indigo-500/10 text-indigo-500'
                             : isDark ? 'border-slate-700 bg-slate-950/50 hover:bg-slate-800' 
                             : 'border-slate-300 bg-slate-50 hover:bg-slate-100'
@@ -326,8 +333,8 @@ export default function CreateExamForm() {
                     <input
                       type="text"
                       placeholder="e.g. AWS, Cisco, PMI, CompTIA"
-                      value={state.certBody}
-                      onChange={(e) => actions.setCertBody(e.target.value)}
+                      value={state.certVendor}
+                      onChange={(e) => actions.setCertVendor(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
                         isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -359,8 +366,8 @@ export default function CreateExamForm() {
                     <input
                       type="text"
                       placeholder="e.g computer science"
-                      value={state.course}
-                      onChange={(e) => actions.setCourse(e.target.value)}
+                      value={state.targetProgram}
+                      onChange={(e) => actions.setTargetProgram(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
                         isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -374,8 +381,8 @@ export default function CreateExamForm() {
                     <input
                       type="text"
                       placeholder="e.g software developer"
-                      value={state.career}
-                      onChange={(e) => actions.setCareer(e.target.value)}
+                      value={state.targetCareer}
+                      onChange={(e) => actions.setTargetCareer(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
                         isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -401,14 +408,14 @@ export default function CreateExamForm() {
 
               <div>
                 <label className={`block text-xs font-medium mb-1.5`}>
-                  Assessment will be in that languge <span className="text-red-500">*</span>
+                  Assessment will be in that language <span className="text-red-500">*</span>
                 </label>
                   <div className="relative">
                    <Target className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
 
                   {/* [${lang.code.toUpperCase()}] */}
                 <select value={state.language}  required
-                   onChange={(e) => actions.setLangauge(e.target.value)}
+                   onChange={(e) => actions.setLanguage(e.target.value)}
                    className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                   focus:ring-indigo-500 transition appearance-none ${
                   isDark ? 'bg-slate-950 border-slate-700 text-white'
@@ -431,8 +438,8 @@ export default function CreateExamForm() {
               <div>
                 <label className="block text-xs font-medium mb-1.5">Primary Objective <span className="text-red-500">*</span></label>
                 <select
-                  value={state.examPurpose}
-                  onChange={(e) => actions.setExamPurpose(e.target.value)}
+                  value={state.primaryObjective}
+                  onChange={(e) => actions.setPrimaryObjective(e.target.value)}
                   className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                     focus:ring-indigo-500 transition ${
                     isDark ? 'bg-slate-950 border-slate-700 text-white' 
@@ -470,16 +477,16 @@ export default function CreateExamForm() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                 {[
                   // { id: 'adaptive', label: 'Adaptive (Smart AI)' },
-                  { id: 'beginner', label: 'Foundational' },
-                  { id: 'intermediate', label: 'Standard Level' },
-                  { id: 'advanced', label: 'High Distinction' },
+                  { id: 'FOUNDATIONAL', label: 'Foundational' },
+                  { id: 'STANDARD', label: 'Standard Level' },
+                  { id: 'HIGH_DISTINCTION', label: 'High Distinction' },
                 ].map((diff) => (
                   <button
                     type="button"
                     key={diff.id}
-                    onClick={() => actions.setDifficultyLevel(diff.id as DifficultyLevel)}
+                    onClick={() => actions.setDifficulty(diff.id as any)}
                     className={`p-3 text-xs font-medium rounded-xl border text-center transition ${
-                      state.difficultyLevel === diff.id
+                      state.difficulty === diff.id
                         ? 'border-indigo-500 bg-indigo-500/10 text-indigo-500 font-bold'
                         : isDark ? 'border-slate-700 bg-slate-950/50 hover:bg-slate-800' 
                         : 'border-slate-300 bg-slate-50 hover:bg-slate-100'
@@ -494,15 +501,15 @@ export default function CreateExamForm() {
             {/* Custom Prompt / Notes */}
             <div>
               <label className="block text-xs font-medium mb-1.5 -mt-2">
-                Describe Your exam In details {state.additionalNotes.length}/1000  <span className="text-red-500">*</span></label>
+                Describe Your exam In details {state.examDescription.length}/1000  <span className="text-red-500">*</span></label>
               <textarea
                 rows={3}
                 maxLength={1000}
                 placeholder=
                 "Describe this exam you want practice and any spicipic details about this exam and the purpose of taking this exam for you."
-                value={state.additionalNotes}
+                value={state.examDescription}
                 required
-                onChange={(e) => actions.setAdditionalNotes(e.target.value)}
+                onChange={(e) => actions.setExamDescription(e.target.value)}
                 className={`w-full p-2 h-32 rounded-xl border text-sm outline-none focus:ring-2 
                   focus:ring-indigo-500 transition ${
                   isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -513,16 +520,16 @@ export default function CreateExamForm() {
 
                <div>
               <label className="block text-xs font-medium mb-1.5 -mt-4">
-                Your Academic Background & Bio {state.background.length}/1000 <span className="text-red-500">*</span>
+                Your Academic Background & Bio {state.academicBackground.length}/1000 <span className="text-red-500">*</span>
               </label>
               
               <textarea
                 rows={3}
                 maxLength={1000}
                 placeholder="Describe your academic background and your qualifications or career you want archieve."
-                value={state.background}
+                value={state.academicBackground}
                 required
-                onChange={(e) => actions.setBackgrund(e.target.value)}
+                onChange={(e) => actions.setAcademicBackground(e.target.value)}
                 className={`w-full p-2 h-32 rounded-xl border text-sm outline-none focus:ring-2 
                   focus:ring-indigo-500 transition ${
                   isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
@@ -532,6 +539,17 @@ export default function CreateExamForm() {
             </div>
 
           </div>
+
+          
+        
+                {/* Error Alert Display */}
+        {state.apiError && (
+            <div className="p-4 mt-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 flex 
+              items-center gap-3 text-sm font-medium">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span>{state.apiError}</span>
+          </div>
+        )}
 
           {/* Submit */}
           <div className="mt-2 pt-4">

@@ -2,27 +2,19 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Send, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Clock, 
-  CheckCircle2, 
-  Navigation, 
-  Copy, 
-  ExternalLink,
-  Sparkles 
-} from 'lucide-react';
+import { Send, MapPin, Mail, Clock, CheckCircle2, Navigation, 
+Copy, ExternalLink, Sparkles } from 'lucide-react';
 import { ContactFormData, InquiryReason } from './types';
+import { createContact, CreateContactPayload, ApiError } from '../../../utils/account/contact'; 
 
 interface ComponentProps {
   isDark: boolean;
 }
 
 export const ContactFormSection: React.FC<ComponentProps> = ({ isDark }) => {
+  
   const [formData, setFormData] = useState<ContactFormData>({
-    fullName: '',
+    name: '',
     email: '',
     reason: 'General Inquiry',
     message: '',
@@ -30,22 +22,44 @@ export const ContactFormSection: React.FC<ComponentProps> = ({ isDark }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
-    // Simulate API call
-    setTimeout(() => {
+    // Map `message` from formData to `statement` expected by the API
+    const payload: CreateContactPayload = {
+      name: formData.name,
+      email: formData.email,
+      reason: formData.reason,
+      statement: formData.message,
+    };
+
+    try {
+      const response = await createContact(payload);
+
+      if (response.success) {
+        setIsSubmitted(true);
+        // Reset form on success
+        setFormData({
+          name: '',
+          email: '',
+          reason: 'General Inquiry',
+          message: '',
+        });
+      }
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message || 'Failed to submit contact request.');
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
+      console.error('Contact form submission error:', err);
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({
-        fullName: '',
-        email: '',
-        reason: 'General Inquiry',
-        message: '',
-      });
-    }, 1200);
+    }
   };
 
   return (
@@ -98,8 +112,8 @@ export const ContactFormSection: React.FC<ComponentProps> = ({ isDark }) => {
             <input
               type="text"
               required
-              value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g. Your Full  Name"
               className={`w-full border px-3.5 py-2.5 rounded-xl text-xs sm:text-sm 
                 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
@@ -175,6 +189,9 @@ export const ContactFormSection: React.FC<ComponentProps> = ({ isDark }) => {
               }`}
             />
           </div>
+
+          {/* Error Message */}
+          {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
 
           {/* Submit Button */}
           <button

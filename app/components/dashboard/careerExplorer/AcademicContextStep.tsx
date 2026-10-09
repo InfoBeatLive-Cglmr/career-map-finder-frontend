@@ -1,6 +1,6 @@
 import React from 'react';
 import { CareerExplorerFormData } from './types';
-import { GraduationCap, School, BookOpen, Award, Compass } from 'lucide-react';
+import { GraduationCap, School, Compass } from 'lucide-react';
 
 interface Props {
   formData: CareerExplorerFormData;
@@ -9,8 +9,8 @@ interface Props {
 }
 
 export const AcademicContextStep: React.FC<Props> = ({ formData, updateForm, isDark }) => {
-  const isHighSchool = formData.educationLevel === 'high_school';
-  const isUndergrad = formData.educationLevel === 'undergraduate';
+  const isHighSchool = formData.journeyStage === 'HIGH_SCHOOL';
+  const isUndergrad = formData.journeyStage === 'UNDERGRADUATE';
 
   return (
     <div className="space-y-6">
@@ -52,9 +52,9 @@ export const AcademicContextStep: React.FC<Props> = ({ formData, updateForm, isD
             <input
               type="text"
               placeholder={isHighSchool ? 'e.g. Grade 11, SS2, A-Levels Year 1' : 'e.g. 3rd Year B.Sc, Diploma'}
-              value={formData.currentGradeOrYear}
+              value={formData.currentGradeLevel}
               required
-              onChange={(e) => updateForm({ currentGradeOrYear: e.target.value })}
+              onChange={(e) => updateForm({ currentGradeLevel: e.target.value })}
               className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium 
                 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDark 
@@ -74,9 +74,9 @@ export const AcademicContextStep: React.FC<Props> = ({ formData, updateForm, isD
             <input
               type="text"
               placeholder="School / Institution Name"
-              value={formData.currentSchoolOrUniversity}
+              value={formData.currentSchoolName}
               required
-              onChange={(e) => updateForm({ currentSchoolOrUniversity: e.target.value })}
+              onChange={(e) => updateForm({ currentSchoolName: e.target.value })}
               className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium 
                 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDark 
@@ -90,15 +90,17 @@ export const AcademicContextStep: React.FC<Props> = ({ formData, updateForm, isD
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className={`block text-sm font-semibold mb-2 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-            Key Subjects or Current Major <span className="text-red-500">*</span>
+          <label className={`block text-sm font-semibold mb-2 
+              ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+              Key Subjects or Current Major 
+              <span className="text-red-500">*</span> 
           </label>
           <input
             type="text"
             placeholder="e.g. Physics, Chemistry, Math OR Computer Science"
-            value={formData.majorOrSubjects.join(', ')}
+            value={formData.keySubjectsMajor}
             required
-            onChange={(e) => updateForm({ majorOrSubjects: e.target.value.split(',').map(s => s.trim()) })}
+            onChange={(e) => updateForm({ keySubjectsMajor: e.target.value })}
             className={`w-full px-4 py-3 rounded-xl border text-sm font-medium focus:outline-none 
               focus:ring-2 focus:ring-blue-500 ${
               isDark 
@@ -115,9 +117,9 @@ export const AcademicContextStep: React.FC<Props> = ({ formData, updateForm, isD
           <input
             type="text"
             placeholder="e.g. Straight A's, 3.8/4.0 GPA, First Class standing"
-            value={formData.gpaOrGradeEstimate}
+            value={formData.estimatedGpaPerformance}
             required
-            onChange={(e) => updateForm({ gpaOrGradeEstimate: e.target.value })}
+            onChange={(e) => updateForm({ estimatedGpaPerformance: e.target.value })}
             className={`w-full px-4 py-3 rounded-xl border text-sm font-medium 
               focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               isDark 
@@ -134,9 +136,9 @@ export const AcademicContextStep: React.FC<Props> = ({ formData, updateForm, isD
           Preferred Qualification Target <span className="text-red-500">*</span>
         </label>
         <select
-          value={formData.preferredDegreeType}
+          value={formData.preferredQualification}
           required
-          onChange={(e) => updateForm({ preferredDegreeType: e.target.value })}
+          onChange={(e) => updateForm({ preferredQualification: e.target.value } as any)}
           className={`w-full px-4 py-3 rounded-xl border text-sm font-medium 
             focus:outline-none focus:ring-2 focus:ring-blue-500 ${
             isDark 

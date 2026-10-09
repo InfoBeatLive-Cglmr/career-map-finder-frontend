@@ -17,6 +17,9 @@ export const setTokensAndUserId = (accessToken: string | null, refreshToken: str
 
  export const BASE_URL: string =  'http://localhost:8080/api';
 
+ 
+ export const API_BASE_URL: string =  'http://localhost:8080/api';
+
  export const SOCKET_BASE_URL: string =  'http://localhost:8080'; 
 
  const api = axios.create({
@@ -47,40 +50,6 @@ export interface RegisterRequest {
     email: string;
     fullName: string;
     password: string;
-}
-
-export interface OnboardRequest {
-    email: string; 
-    fullName: string;
-    companyId: string; 
-    projectId: string; 
-    roleInCompany: string;  
-    country: string;
-    company: string; 
-    companyWebsite: string;
-    projectName: string;
-    role: string;
-    companyName: string; 
-    managerName: string;
-}
-
-export interface OnboardResponse {
-    success: boolean;
-    message: string;
-    userId: string;
-    email: string;
-    isNewUser: boolean;
-}
-
-export interface AcceptInvitationRequest {
-    userId: string;
-    companyId: string;
-}
-
-export interface AcceptInvitationResponse {
-    success: boolean;
-    message: string;
-    userCompany: any;
 }
 
 export interface LoginRequest {
@@ -116,96 +85,10 @@ export const auth = {
     },
 };
 
-export const onboarding = {
-    onboardUser: async (data: OnboardRequest): Promise<OnboardResponse> => {
-        const response = await api.post<OnboardResponse>('/account/auth/register/onboard', data);
-        return response.data;
-    },
-
-    acceptInvitation: async (data: AcceptInvitationRequest): Promise<AcceptInvitationResponse> => {
-        const response = await api.put<AcceptInvitationResponse>('/account/auth/register/onboard/accept-invitation', data);
-        return response.data;
-    },
-};
-
 interface LogoutResponse {
   message: string;
   error: string;
 }
-
-
-export const clearCompanyData = () => {
-  if (typeof window === "undefined") return; 
-  localStorage.removeItem("unread_count");
-  localStorage.removeItem("company_users");
-  localStorage.removeItem("company_projects");
-  localStorage.removeItem("company_invoices");
-};
-
-export const clearMetricsCookies  = () => {
-   if (typeof window === "undefined") return; 
-  // ✅ 1. Clear cookies
-  const allCookies = Cookies.get();
-
-  Object.keys(allCookies).forEach((key) => {
-    if (
-      key.startsWith("project_") ||
-      key.startsWith("main_metrics_") ||
-      key.startsWith("custom_metrics_") ||
-      key.startsWith("custom_definitions_") ||
-      key === "selected_metrics_type" ||
-      key === "selected_metric_name"
-    ) {
-      Cookies.remove(key);
-    }
-  });
-
-  // ✅ 2. Clear localStorage (if anything is stored there)
-  Object.keys(localStorage).forEach((key) => {
-    if (
-      key.startsWith("project_") ||
-      key.startsWith("main_metrics_") ||
-      key.startsWith("custom_metrics_") ||
-      key.startsWith("custom_definitions_") ||
-      key === "selected_metrics_type" ||
-      key === "selected_metric_name"
-    ) {
-      localStorage.removeItem(key);
-    }
-  });
-
-  const prefix = "myApp_";
-
-  // Clear cookies
-  const allStorageCookies = Cookies.get();
-  Object.keys(allStorageCookies).forEach((key) => {
-    if (
-      key.startsWith(`${prefix}project_`) ||
-      key.startsWith(`${prefix}main_metrics_`) ||
-      key.startsWith(`${prefix}custom_metrics_`) ||
-      key.startsWith(`${prefix}custom_definitions_`) ||
-      key === `${prefix}selected_metrics_type` ||
-      key === `${prefix}selected_metric_name`
-    ) {
-      Cookies.remove(key);
-    }
-  });
-
-  // Clear localStorage
-  Object.keys(localStorage).forEach((key) => {
-    if (
-      key.startsWith(`${prefix}project_`) ||
-      key.startsWith(`${prefix}main_metrics_`) ||
-      key.startsWith(`${prefix}custom_metrics_`) ||
-      key.startsWith(`${prefix}custom_definitions_`) ||
-      key === `${prefix}selected_metrics_type` ||
-      key === `${prefix}selected_metric_name`
-    ) {
-      localStorage.removeItem(key);
-    }
-  });
-  clearCompanyData();
-};
 
 export const logout = async (): Promise<{ success: boolean; message?: string }> => {
   try {
@@ -218,43 +101,6 @@ export const logout = async (): Promise<{ success: boolean; message?: string }> 
       Cookies.remove('refreshToken', { path: '/' });
       Cookies.remove('userId', { path: '/' });
       Cookies.remove('isAuthenticated', { path: '/', });
-
-      Cookies.remove("dashboardsUpdate", { path: '/' });
-      Cookies.remove("settingsUpdate", { path: '/' });
-      Cookies.remove("notificationUpdate", { path: '/' });
-
-      Cookies.remove("unread_count", { path: '/' });
-      Cookies.remove("company_users", { path: '/' });
-      Cookies.remove("company_projects", { path: '/' });
-      Cookies.remove("company_invoices", { path: '/' });
-      
-      Cookies.remove('user', { path: '/' });
-      Cookies.remove('project',  { path: '/',  });
-      Cookies.remove('company', { path: '/',  });
-      Cookies.remove('companyOwnerId', { path: '/',  });
-      Cookies.remove('userCompany', { path: '/',  });
-
-      Cookies.remove('userName',  { path: '/'});
-      Cookies.remove('email', { path: '/' });
-      Cookies.remove('projectId', { path: '/' });
-      Cookies.remove('companyId', { path: '/' });
-      Cookies.remove('userCompanyId',  { path: '/' });
-      Cookies.remove('currency',  { path: '/',  });
-
-      Cookies.remove('employeesCount', { path: '/' });
-      Cookies.remove('projectsCount', { path: '/' });
-      Cookies.remove('numberOfUSersAllowed', { path: '/' });
-      Cookies.remove('numberOfProjectsAllowed', { path: '/' });
-      Cookies.remove('subscriptionType',  { path: '/' });
-      Cookies.remove('isCompanySuspended', { path: '/' });
-      clearMetricsCookies();
-
-      Cookies.remove("dashboardsUpdate", { path: '/' });
-      Cookies.remove("settingsUpdate", { path: '/' });
-      Cookies.remove("notificationUpdate", { path: '/' });
-      Cookies.remove("dashboardsUpdateLatest", { path: '/' });
-      Cookies.remove("settingsUpdateLatest", { path: '/' });
-      Cookies.remove("notificationUpdateLatest", { path: '/' });
 
       return { success: true, message: responseData.message };
     } else {

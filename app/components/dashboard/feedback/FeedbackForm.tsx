@@ -1,17 +1,17 @@
 'use client';
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, CheckCircle2, MessageSquareHeart, Sparkles } from 'lucide-react';
-
+import { Send, CheckCircle2, MessageSquareHeart } from 'lucide-react';
 import { FeedbackFormData, FeedbackReason } from './types';
 import { StarRating } from './StarRating';
+import { feedbackApi } from '../../../utils/account/feedback'; 
 
 interface ComponentProps {
   isDark: boolean;
 }
 
 export const FeedbackForm: React.FC<ComponentProps> = ({ isDark }) => {
+ 
   const [formData, setFormData] = useState<FeedbackFormData>({
     fullName: '',
     email: '',
@@ -22,15 +22,43 @@ export const FeedbackForm: React.FC<ComponentProps> = ({ isDark }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setError(null);
 
-    setTimeout(() => {
+    try {
+      const response = await feedbackApi.create({
+        fullName: formData.fullName,
+        email: formData.email || undefined,
+        reason: formData.reason,
+        rating: formData.rating,
+        statement: formData.statement,
+      });
+
+      if (response.success) {
+        setIsSubmitted(true);
+        // Reset form state on success
+        setFormData({
+          fullName: '',
+          email: '',
+          reason: 'General Experience',
+          rating: 4.5,
+          statement: '',
+        });
+
+         setIsSubmitting(true);
+
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'An error occurred while submitting feedback.';
+      setError(message);
+      console.error('Feedback submission error:', err);
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 1200);
+    }
   };
 
   return (
@@ -183,6 +211,12 @@ export const FeedbackForm: React.FC<ComponentProps> = ({ isDark }) => {
               }`}
             />
           </div>
+
+          {error && (
+            <div className="p-3 text-sm text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400 rounded-lg">
+              {error}
+            </div>
+          )}
 
           {/* Submit Button */}
           <button

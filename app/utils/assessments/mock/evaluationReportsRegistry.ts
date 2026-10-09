@@ -1,5 +1,6 @@
 import { ComprehensiveEvaluationReport } from './exam';
 
+
 export const allEvaluationReports: Record<string, ComprehensiveEvaluationReport> = {
   // 1. NIGERIAN JAMB UTME (Use of English - Objective CBT)
   'sess_jamb_001': {
@@ -171,3 +172,35 @@ export const allEvaluationReports: Record<string, ComprehensiveEvaluationReport>
 export const getEvaluationReportBySessionId = (sessionId: string): ComprehensiveEvaluationReport | null => {
   return allEvaluationReports[sessionId] || null;
 };
+
+
+
+
+//  {
+//     sessionId: 'id of the exam session',
+//     examName: 'the exam name like e.g CBSE',
+//     subject: 'the subjec name since for each exam the user must take subjec like maths etc',
+//     totalMarksObtained: the user score based the evaluation,
+//     totalMaxMarks: toal mar of he exact exam mark ,
+//     percentage: e.g 100,
+//     grade: 'e.g Excellent (96/100)',
+//     overallFeedback: 'provide the descriptive feedback about the exact and the key thing in detials',
+//     strengths: [
+//       'five most important strength section in the exam'
+//     ],
+//     improvementAreas: [
+//       '5 areas which the improment should focus on'
+//     ],
+//     the catogory breadnowd is teh breankdownd of the key area which the user 
+//     get his score based how he did them which determined his resuct so this he breakdownd of the keything 
+//     in the exact which give him that comulative score all inlcuding failed on and the one he succeed at
+//     categoryBreakdown: [
+//       { categoryName: 'e.g name', score: e.g 80, maxScore: e.g 100, percentage: e.g 80, status: 'e.g Strong, poor etc' },
+//       { categoryName: '', score: , maxScore: , percentage: , status: '' },
+//       { categoryName: '', score: , maxScore: , percentage: , status: '' },
+//       { categoryName: '', score: , maxScore: , percentage: , status: '' }
+//       { categoryName: '', score: , maxScore: , percentage: , status: '' },
+//       { categoryName: '', score: , maxScore: , percentage: , status: '' }
+//     ],
+//     generatedAt: new Date().toISOString()
+//   },

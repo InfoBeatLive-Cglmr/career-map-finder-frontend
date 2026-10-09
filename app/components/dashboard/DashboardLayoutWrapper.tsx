@@ -1,8 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { useTheme } from '../../context/ThemeContext';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 interface DashboardLayoutWrapperProps {
   children: React.ReactNode;
@@ -13,6 +15,20 @@ export const DashboardLayoutWrapper: React.FC<DashboardLayoutWrapperProps> = ({ 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const isDark = theme === 'dark';
+  const router = useRouter();
+
+  
+    useEffect(() => {
+      
+        const userId =  Cookies.get('userId');
+        const token = Cookies.get('accessToken');
+        const isAuthenticated = Cookies.get('isAuthenticated');
+  
+        if (!userId && !token && !isAuthenticated) {
+          router.push('/auth/signin');
+        } 
+      
+    }, []);
 
   return (
     <div

@@ -1,7 +1,7 @@
 'use client';
-import React, { useState, //useEffect 
+import React, { useState, useEffect 
 } from 'react';
-//import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 import Link from 'next/link';
 import Button from '../Button';
 import PasswordInput from '../_shared/PasswordInput';
@@ -25,17 +25,17 @@ const Redeem: React.FC = () => {
   const router = useRouter();
 
  
-  // useEffect(() => {
+  useEffect(() => {
     
-  //     const userId =  Cookies.get('userId');
-  //     const token = Cookies.get('accessToken');
-  //     const isAuthenticated = Cookies.get('isAuthenticated');
+      const userId =  Cookies.get('userId');
+      const token = Cookies.get('accessToken');
+      const isAuthenticated = Cookies.get('isAuthenticated');
 
-  //     if (isAuthenticated && userId && token) {
-  //       router.push('/dashboard/instance/main');
-  //     } 
+      if (isAuthenticated && userId && token) {
+        router.push('/dashboard');
+      } 
     
-  // }, []);
+  }, []);
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

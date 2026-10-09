@@ -22,7 +22,7 @@ const ForgotPassword: React.FC = () => {
       const isAuthenticated = Cookies.get('isAuthenticated');
 
       if (isAuthenticated && userId && token) {
-        router.push('/dashboard/instance/main');
+        router.push('/dashboard');
       } 
     
   }, []);

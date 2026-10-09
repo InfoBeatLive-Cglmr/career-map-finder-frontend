@@ -3,36 +3,38 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../context/ThemeContext';
+
 import { CareerExplorerFormData } from './types';
 import { ProfileAndTargetStep } from './ProfileAndTargetStep';
 import { AcademicContextStep } from './AcademicContextStep';
+
 import { LifestyleAndPreferencesStep } from './LifestyleAndPreferencesStep';
 import { PersonalBioAndQuestionsStep } from './PersonalBioAndQuestionsStep';
-import { Compass, GraduationCap, Heart, MessageSquare, ArrowRight, ArrowLeft, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Compass, GraduationCap, Heart, MessageSquare, ArrowRight, ArrowLeft, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import Cookies from 'js-cookie';
+
+import { careerExplorerApi, CreateCareerExplorerIntakeInput, IntakeWithReportResponse } from '@/app/utils/career-explorer/careerExplorerMain';
+import { syncUpdateResponsesAndInvalidateCache } from '../settings/InvalidateCache';
 
 const INITIAL_FORM_DATA: CareerExplorerFormData = {
-  langauge:'English',
-  educationLevel: 'high_school',
-  academicStream: 'sciences',
-  targetRoleOrDomain: '',
+  userId: Cookies.get('userId') || '',
+  language: 'English',
+  journeyStage: 'HIGH_SCHOOL',
+  targetRoleOrField: '',
+  academicStream: 'PHYSICAL_NATURAL_SCIENCES',
   homeCountry: '',
-  homeStateOrCity: '',
-  targetCountries: ['global'],
-
-  currentGradeOrYear: '',
-  currentSchoolOrUniversity: '',
-  majorOrSubjects: [],
-  gpaOrGradeEstimate: '',
-  preferredDegreeType: 'bachelors',
-
-  keyInterestsAndHobbies: [],
-  coreStrengths: [],
-  primaryCareerPriority: 'high_salary',
-  targetWorkEnvironment: 'hybrid',
-  desiredWorkHours: 'standard',
-
-  personalBioAndBackground: '',
-  careerInspirationsOrQuestions: '',
+  stateCity: '',
+  targetStudyCountry: '🌐',
+  currentGradeLevel: '',
+  currentSchoolName: '',
+  keySubjectsMajor: '',
+  estimatedGpaPerformance: '',
+  preferredQualification: 'BACHELORS',
+  primaryPriority: 'HIGH_EARNING_POTENTIAL',
+  preferredWorkEnv: 'ON_SITE',
+  workIntensity: 'STANDARD_40H',
+  personalBackground: '',
+  specificQuestions: '',
 };
 
 export default function CareerExplorerForm() {
@@ -42,53 +44,62 @@ export default function CareerExplorerForm() {
   const [step, setStep] = useState<number>(1);
   const [formData, setFormData] = useState<CareerExplorerFormData>(INITIAL_FORM_DATA);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [apiResponse, setApiResponse] = useState<IntakeWithReportResponse | null>(null);
 
   const updateForm = (fields: Partial<CareerExplorerFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }));
   };
 
   const handleNext = () => {
-    if (step === 1 && !formData.targetRoleOrDomain.trim()) {
-      alert('Please enter a target career or domain you wish to explore.');
+    setErrorMessage(null);
+    if (step === 1 && !formData.targetRoleOrField.trim()) {
+      setErrorMessage('Please enter a target career or domain you wish to explore.');
       return;
     }
-
-      // if(!formData.academicStream || !formData.careerInspirationsOrQuestions || !formData.coreStrengths
-      //   || !formData.currentGradeOrYear || !formData.currentSchoolOrUniversity || !formData.desiredWorkHours
-      //   || !formData.educationLevel || !formData.gpaOrGradeEstimate || !formData.homeCountry || !formData.homeStateOrCity
-      //   || !formData.keyInterestsAndHobbies || !formData.majorOrSubjects || !formData.personalBioAndBackground
-      //   || !formData.preferredDegreeType || !formData.primaryCareerPriority || !formData.targetCountries
-      //   || !formData.targetRoleOrDomain || !formData.targetWorkEnvironment
-      // ){
-      //   alert('All Field Is Required')
-      //   return
-      // }
-
     setStep((prev) => Math.min(prev + 1, 4));
   };
 
   const handlePrev = () => {
+    setErrorMessage(null);
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
+    setErrorMessage(null);
+
+    // Format payload to strictly match CreateCareerExplorerIntakeInput interface
+    const payload: CreateCareerExplorerIntakeInput = {
+      userId: formData.userId || Cookies.get('userId') || undefined,
+      language: formData.language || 'English',
+      journeyStage: formData.journeyStage,
+      targetRoleOrField: formData.targetRoleOrField,
+      academicStream: formData.academicStream,
+      homeCountry: formData.homeCountry,
+      stateCity: formData.stateCity,
+      targetStudyCountry: formData.targetStudyCountry,
+      currentGradeLevel: formData.currentGradeLevel || undefined,
+      currentSchoolName: formData.currentSchoolName || undefined,
+      keySubjectsMajor: formData.keySubjectsMajor,
+      estimatedGpaPerformance: formData.estimatedGpaPerformance,
+      preferredQualification: formData.preferredQualification,
+      primaryPriority: formData.primaryPriority,
+      preferredWorkEnv: formData.preferredWorkEnv,
+      workIntensity: formData.workIntensity,
+      personalBackground: formData.personalBackground,
+      specificQuestions: formData.specificQuestions || undefined,
+    };
+
     try {
-      if(!formData.academicStream || !formData.careerInspirationsOrQuestions || !formData.coreStrengths
-        || !formData.currentGradeOrYear || !formData.currentSchoolOrUniversity || !formData.desiredWorkHours
-        || !formData.educationLevel || !formData.gpaOrGradeEstimate || !formData.homeCountry || !formData.homeStateOrCity
-        || !formData.keyInterestsAndHobbies || !formData.majorOrSubjects || !formData.personalBioAndBackground
-        || !formData.preferredDegreeType || !formData.primaryCareerPriority || !formData.targetCountries
-        || !formData.targetRoleOrDomain || !formData.targetWorkEnvironment
-      ){
-        alert(`
-        All Field Is Required, 
-        Go back and check and make sure that you fill any field.`)
-      }
-      console.log('Submitted Career Explorer Payload:', formData);
-      // Trigger AI Deep Dive Generation...
-    } catch (error) {
-      console.error(error);
+      const response = await careerExplorerApi.createIntakeAndGenerateReport(payload);
+      syncUpdateResponsesAndInvalidateCache();
+      setApiResponse(response);
+    } catch (error: any) {
+      console.error('Failed to submit career intake:', error);
+      setErrorMessage(
+        error?.message || 'An error occurred while connecting to the server. Please try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -109,18 +120,22 @@ export default function CareerExplorerForm() {
         
         {/* Header Section */}
         <div className="text-center space-y-2">
-          {/* <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs
-           font-semibold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
-            <Sparkles className="w-3.5 h-3.5" /> AI Career Navigator & Pathway Architect
-          </div> */}
           <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight">
             Explore Your Career Pathway
           </h1>
           <p className={`text-sm sm:text-base max-w-xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             Get a tailored, multi-year roadmap including university entrance exams,
-             top global schools, salary trajectory, and alternative pathways.
+            top global schools, salary trajectory, and alternative pathways.
           </p>
         </div>
+
+        {/* Error Alert Display */}
+        {errorMessage && (
+          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 flex items-center gap-3 text-sm font-medium">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
         {/* Stepper Wizard Bar */}
         <div className={`p-4 rounded-2xl border ${isDark ? 'bg-slate-900/60 border-slate-700' 
@@ -192,12 +207,21 @@ export default function CareerExplorerForm() {
             </motion.div>
           </AnimatePresence>
 
+          
+        {/* Error Alert Display */}
+        {errorMessage && (
+          <div className="p-4 mt-6 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 flex items-center gap-3 text-sm font-medium">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
           {/* Controls */}
-          <div className="mt-8 pt-6 border-t border-slate-300 dark:border-slate-700 flex items-center justify-between">
+          <div className="mt-6 pt-6 border-t border-slate-300 dark:border-slate-700 flex items-center justify-between">
             <button
               type="button"
               onClick={handlePrev}
-              disabled={step === 1}
+              disabled={step === 1 || isSubmitting}
               className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${
                 step === 1
                   ? 'opacity-0 pointer-events-none'
@@ -207,7 +231,7 @@ export default function CareerExplorerForm() {
               }`}
             >
               <ArrowLeft className="w-4 h-4" /> Back
-            </button>
+            </button> 
 
             {step < 4 ? (
               <button
@@ -220,40 +244,39 @@ export default function CareerExplorerForm() {
               </button>
             ) : (
               <div>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
-                hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
-                items-center gap-2 shadow-lg shadow-indigo-500/25 max-sm:hidden"
-              >
-                {isSubmitting ? (
-                  <span>Analyzing...</span>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" /> Create Career Deep-Dive
-                  </>
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
+                  hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
+                  items-center gap-2 shadow-lg shadow-indigo-500/25 max-sm:hidden disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <span>Analyzing...</span>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" /> Create Career Deep-Dive
+                    </>
+                  )}
+                </button>
 
-               <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
-                hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
-                items-center gap-2 shadow-lg shadow-indigo-500/25 sm:hidden"
-              >
-                {isSubmitting ? (
-                  <span>Analyzing...</span>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" /> Explore Career
-                  </>
-                )}
-              </button>
-
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
+                  hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
+                  items-center gap-2 shadow-lg shadow-indigo-500/25 sm:hidden disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <span>Analyzing...</span>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" /> Explore Career
+                    </>
+                  )}
+                </button>
               </div>
             )}
           </div>

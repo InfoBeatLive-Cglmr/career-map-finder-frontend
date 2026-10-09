@@ -8,7 +8,6 @@ import {
   Layers, 
   Sparkles, 
   Terminal, 
-  FileText,
   Copy,
   Check
 } from 'lucide-react';

@@ -62,11 +62,20 @@ const handleAuthResponse = (response: OtpResponse): void => {
   if (message) {
     console.log(message);
 
+    const now = new Date().toISOString();
+
     if (accessToken && userId && companyId) {
       Cookies.set('accessToken', accessToken, { path: '/', expires: 30 }); 
       Cookies.set('userId', userId, { path: '/', expires: 30 });
-      Cookies.set('companyId', companyId, { path: '/', expires: 30 });
       Cookies.set('isAuthenticated', 'true', { path: '/', expires: 30 });
+
+      Cookies.set('lastCareerUpdate', now, { path: '/', expires: 30 });
+      Cookies.set('lastAssessmentUpdate', now, { path: '/', expires: 30 });
+      Cookies.set('lastInterviewUpdate', now, { path: '/', expires: 30 });
+      Cookies.set('lastDashboardsUpdate', now, { path: '/', expires: 30 });
+      Cookies.set('lastSettingsUpdate', now, { path: '/', expires: 30 });
+      Cookies.set('lastNotificationUpdate', now, { path: '/', expires: 30 });
+
     }
   } else if (error) {
     console.error(error);

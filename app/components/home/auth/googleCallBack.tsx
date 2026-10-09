@@ -21,7 +21,6 @@ const GoogleCallBack: React.FC = () => {
     if (accessToken && userId && companyId) {
       Cookies.set('accessToken', accessToken, { path: '/', expires: 30 });
       Cookies.set('userId', userId, { path: '/', expires: 30 });
-      Cookies.set('companyId', companyId, { path: '/', expires: 30 });
       Cookies.set('isAuthenticated', 'true', { path: '/', expires: 30 });
      
       if (typeof window.gtag !== 'undefined') {

@@ -1,50 +1,63 @@
-export type EducationLevel = 
-  | 'high_school'       // Secondary / High School (Grades 9-12 / SS1-SS3)
-  | 'undergraduate'     // Currently in College / University
-  | 'recent_graduate'   // Graduated within 0-2 years
-  | 'career_switcher';  // Working professional transitioning careers
+export type AcademicJourneyStage =
+  | 'HIGH_SCHOOL'
+  | 'UNDERGRADUATE'
+  | 'RECENT_GRADUATE'
+  | 'CAREER_SWITCHER';
 
-export type AcademicStream = 
-  | 'sciences'
-  | 'commercial_business'
-  | 'arts_humanities'
-  | 'engineering_tech'
-  | 'health_medical'
-  | 'undecided';
+export type AcademicStream =
+  | 'PHYSICAL_NATURAL_SCIENCES'
+  | 'ENGINEERING_TECHNOLOGY'
+  | 'HEALTH_MEDICAL_SCIENCES'
+  | 'COMMERCIAL_BUSINESS'
+  | 'ARTS_LAW_HUMANITIES'
+  | 'UNDECIDED_OPEN';
 
-export type CareerPriority = 
-  | 'high_salary'
-  | 'work_life_balance'
-  | 'global_mobility'
-  | 'social_impact'
-  | 'job_security'
-  | 'creative_freedom';
+export type PrimaryCareerPriority =
+  | 'HIGH_EARNING_POTENTIAL'
+  | 'WORK_LIFE_BALANCE'
+  | 'GLOBAL_MOBILITY_VISAS'
+  | 'SOCIAL_IMPACT_PURPOSE'
+  | 'HIGH_DEMAND_STABILITY'
+  | 'CREATIVE_AUTONOMY';
+  
+export type QualificationTarget =
+  | 'DIPLOMA'
+  | 'BACHELORS'
+  | 'MASTERS'
+  | 'DOCTORATE_PHD'
+  | 'PROFESSIONAL_CERTIFICATION'
+  | 'FELLOWSHIP_SPECIALIZATION';
+  
+export type PreferredWorkEnvironment =
+  | 'REMOTE'
+  | 'HYBRID'
+  | 'ON_SITE'
+  | 'FLEXIBLE';
+
+export type WorkIntensityPreference =
+  | 'STANDARD_40H'
+  | 'MODERATE_50H'
+  | 'HIGH_INTENSITY_60H_PLUS';
 
 export interface CareerExplorerFormData {
-  // Step 1: User Profile & Target Aspirations
-  langauge:string;
-  educationLevel: EducationLevel;
+  userId: string;
+  language: string;
+  journeyStage: AcademicJourneyStage;
+  targetRoleOrField: string;
   academicStream: AcademicStream;
-  targetRoleOrDomain: string; // e.g. "AI Engineer", "Neurosurgeon", "Investment Banker"
   homeCountry: string;
-  homeStateOrCity: string;
-  targetCountries: string[]; // Preferred locations to study or work
+  stateCity: string;
+  targetStudyCountry: string;
+  currentGradeLevel?: string;
+  currentSchoolName?: string;
+  keySubjectsMajor: string;
+  estimatedGpaPerformance: string;
+  preferredQualification: QualificationTarget;
+  primaryPriority: PrimaryCareerPriority;
+  preferredWorkEnv: PreferredWorkEnvironment;
+  workIntensity: WorkIntensityPreference;
+  personalBackground: string;
+  specificQuestions?: string;
 
-  // Step 2: Educational Context & Level-Specific Details
-  currentGradeOrYear: string; // e.g. "Grade 11 / SS2" or "3rd Year B.Sc"
-  currentSchoolOrUniversity: string;
-  majorOrSubjects: string[];
-  gpaOrGradeEstimate: string;
-  preferredDegreeType: string; // e.g., Bachelor's, Master's, Vocational, Self-Taught
-
-  // Step 3: Aptitudes, Interests & Lifestyle Goals
-  keyInterestsAndHobbies: string[];
-  coreStrengths: string[];
-  primaryCareerPriority: CareerPriority;
-  targetWorkEnvironment: 'remote' | 'office' | 'hybrid' | 'field_outdoor' | 'flexible';
-  desiredWorkHours: 'standard' | 'flexible' | 'high_intensity';
-
-  // Step 4: AI Personalization & Context
-  personalBioAndBackground: string;
-  careerInspirationsOrQuestions: string; // Specific doubts (e.g. "Is medicine worth 8 years of study?")
 }
+

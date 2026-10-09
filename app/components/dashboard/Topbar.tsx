@@ -1,11 +1,14 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@/app/context/ThemeContext'; 
 import { Menu, Sun, Moon, Bell, Sparkles, ChevronDown,  Settings, 
 LogOut, HelpCircle, PlusCircle,
-User, } from 'lucide-react';
+User,
+AlertCircle,
+Clock, } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Cookies from 'js-cookie';
 
 interface TopbarProps {
   onOpenMobileSidebar: () => void;
@@ -15,6 +18,35 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
   const { theme, toggleTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const token = Cookies.get('accessToken')
+ 
+  
+    
+      useEffect(() => {
+        
+          const userId =  Cookies.get('userId');
+          const token = Cookies.get('accessToken');
+          const isAuthenticated = Cookies.get('isAuthenticated');
+    
+          if (!userId && !token && !isAuthenticated) {
+            router.push('/auth/signin');
+          } 
+        
+      }, []);
+
+      // useEffect(() => {
+      //      syncUpdateResponsesAndInvalidateCache();
+      // }, []);
+
+      // useEffect(() => {
+      //   const interval = setInterval(() => {
+      //      syncUpdateResponsesAndInvalidateCache();
+      // }, 60000); // every 1 min
+
+      //   return () => clearInterval(interval);
+      //  }, []);
+  
+ 
 
   return (
     <header
@@ -65,17 +97,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
 
       </div>
      
-      {/* Right Actions Header */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Quick Action Button hidden sm: */}
-        {/* <button className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r 
-        from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs 
-        font-semibold shadow-md shadow-indigo-500/10 transition-all">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Ask AI Advisor</span>
-        </button> */}
-
-        {/* Theme Toggle Button */}
+      
         <button
           onClick={toggleTheme}
           className={`p-2 rounded-xl border transition-colors relative ${
@@ -91,9 +114,15 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
             <Moon className="w-4 h-4 text-slate-700" />
           )}
         </button>
+          
+          <a href="/dashboard/alert"><button className={`p-2 rounded-xl border transition-colors relative ${
+            theme === 'dark' ? 'text-slate-300 hover:bg-slate-900 border-slate-700'
+            : 'text-slate-600 hover:bg-slate-50 border-slate-300'}`} aria-label="Autonomous Alert" >
+            <Clock className="w-4 h-4 bg-indigo-500 text-white rounded-full" />
+          </button></a>
 
         {/* Notifications Popover Toggle */}
-        <div className="relative">
+        {/* <div className="relative">
           <button
             onClick={() => {
               setShowNotifications(!showNotifications);
@@ -108,7 +137,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
           >
             <Bell className="w-4 h-4" />
             <span
-              className={`w-2 h-2 rounded-full bg-emerald-500 absolute top-2 right-2 ring-2 ${
+              className={`w-2 h-2 rounded-full bg-indigo-500 absolute top-2 right-2 ring-2 ${
                 theme === 'dark' ? 'ring-slate-950' : 'ring-white'
               }`}
             />
@@ -120,7 +149,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
-                className={`absolute -right-10 sm:right-0 mt-2 w-80 border rounded-2xl shadow-2xl p-4 z-50 ${
+                className={`hiddn absolute -right-10 sm:right-0 mt-2 w-80 border rounded-2xl shadow-2xl p-4 z-50 ${
                   theme === 'dark'
                     ? 'bg-slate-900 border-slate-700'
                     : 'bg-white border-slate-300'
@@ -176,7 +205,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </div> */}
 
         {/* Divider */}
         <div
@@ -220,25 +249,17 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
                     : 'bg-white border-slate-300'
                 }`}
               >
-                <div
-                  className={`px-3 py-2 border-b mb-1 ${
-                    theme === 'dark' ? 'border-slate-700' : 'border-slate-300'
-                  }`}
-                >
-                  <p
-                    className={`font-bold ${
-                      theme === 'dark' ? 'text-white' : 'text-slate-900'
-                    }`}
-                  >
-                    Your Full Name
-                  </p>
-                  <p
-                    className={`text-[11px] truncate ${
-                      theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
-                    }`}
-                  >
-                    name@example.com
-                  </p>
+                <div className={`px-3 py-2 border-b mb-1 ${ theme === 'dark' ? 'border-slate-700' : 'border-slate-300'}`} >
+                 
+                 {/* {fullName ? (<p className={`font-bol ${ theme === 'dark' ? 'text-white' : 'text-slate-900' }`}>
+                 {fullName} </p>):
+
+                  (<p className={`font-bol ${ theme === 'dark' ? 'text-white' : 'text-slate-900' }`}>
+                  Career Map Finder </p>)} */}
+
+                <p className={`font-bold text-lg ${ theme === 'dark' ? 'text-white' : 'text-slate-900' }`}>
+                  Career<span className='text-indigo-600'>Map</span>Finder </p>
+                
                 </div>
 
                 <a
@@ -264,7 +285,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
                   <span>Contact Support</span>
                 </a>
 
-                <div
+                 {token ? 
+                 (<a href="/auth/signin"><div
                   className={`pt-1 mt-1 border-t ${
                     theme === 'dark' ? 'border-slate-700' : 'border-slate-300'
                   }`}
@@ -279,7 +301,23 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
                     <LogOut className="w-4 h-4" />
                     <span>Log Out</span>
                   </button>
-                </div>
+                </div></a>): 
+                (<a href="/auth/signin"><div
+                  className={`pt-1 mt-1 border-t ${
+                    theme === 'dark' ? 'border-slate-700' : 'border-slate-300'
+                  }`}
+                >
+                  <button
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-colors ${
+                      theme === 'dark'
+                        ? 'text-slate-300 hover:bg-slate-950/50'
+                        : 'text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className=''>Sign In</span>
+                  </button>
+                </div></a>)}
               </motion.div>
             )}
           </AnimatePresence>

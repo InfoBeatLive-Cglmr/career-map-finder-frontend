@@ -1,21 +1,21 @@
 import React from 'react';
-import { JobPrepFormData, InterviewFocus, AiInterviewerPersona } from './types';
-import { INTERVIEW_FOCUS_OPTIONS, AI_PERSONAS } from './constants';
-import { Check, Bot, Clock, Code2, Link as LinkIcon } from 'lucide-react';
+import { INTERVIEW_FOCUS_OPTIONS, AI_PERSONAS, InterviewFocus } from './constants';
+import { Check, Bot, Clock, Code2 } from 'lucide-react';
+import { CreateInterviewSessionInput } from '@/app/utils/job-preparation/interviewSession';
 
 interface Props {
-  formData: JobPrepFormData;
-  updateForm: (fields: Partial<JobPrepFormData>) => void;
+  formData: CreateInterviewSessionInput;
+  updateForm: (fields: Partial<CreateInterviewSessionInput>) => void;
   isDark: boolean;
 }
 
 export const InterviewConfigStep: React.FC<Props> = ({ formData, updateForm, isDark }) => {
   const toggleFocus = (id: InterviewFocus) => {
-    const current = formData.primaryFocus;
+    const current = formData.selectedCategories;
     if (current.includes(id)) {
-      updateForm({ primaryFocus: current.filter((f) => f !== id) });
+      updateForm({ selectedCategories: current.filter((f) => f !== id) });
     } else {
-      updateForm({ primaryFocus: [...current, id] });
+      updateForm({ selectedCategories: [...current, id] });
     }
   };
 
@@ -28,7 +28,7 @@ export const InterviewConfigStep: React.FC<Props> = ({ formData, updateForm, isD
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {INTERVIEW_FOCUS_OPTIONS.map((opt) => {
-            const isSelected = formData.primaryFocus.includes(opt.id);
+            const isSelected = formData.selectedCategories.includes(opt.id);
             return (
               <button
                 key={opt.id}
@@ -70,12 +70,12 @@ export const InterviewConfigStep: React.FC<Props> = ({ formData, updateForm, isD
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {AI_PERSONAS.map((p) => {
-            const isSelected = formData.aiPersona === p.id;
+            const isSelected = formData.interviewerStyle === p.id;
             return (
               <button
                 key={p.id}
                 type="button"
-                onClick={() => updateForm({ aiPersona: p.id })}
+                onClick={() => updateForm({ interviewerStyle: p.id })}
                 className={`p-4 rounded-xl border text-left transition-all ${
                   isSelected
                     ? 'border-blue-500 ring-2 ring-blue-500/30 bg-blue-500/10'
@@ -110,13 +110,13 @@ export const InterviewConfigStep: React.FC<Props> = ({ formData, updateForm, isD
         <div>
           <label className={`block text-sm font-semibold mb-2
             ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-            Estimated Mock Duration <span className="text-red-500">*</span>
+            Estimated Interview Duration <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <Clock className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
             <select
-              value={formData.interviewDurationMinutes}
-              onChange={(e) => updateForm({ interviewDurationMinutes: Number(e.target.value) })}
+              value={formData.estimatedDurationMins}
+              onChange={(e) => updateForm({ estimatedDurationMins: Number(e.target.value) })}
               className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium 
                 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDark 
@@ -134,9 +134,9 @@ export const InterviewConfigStep: React.FC<Props> = ({ formData, updateForm, isD
 
         <div className="flex flex-col justify-end">
           <label
-            onClick={() => updateForm({ includeCodingEnvironment: !formData.includeCodingEnvironment })}
+            onClick={() => updateForm( { isExperienced: !formData.isExperienced } )}
             className={`p-3 rounded-xl border cursor-pointer flex items-center justify-between transition-colors ${
-              formData.includeCodingEnvironment
+                formData.isExperienced
                 ? 'border-blue-500 bg-blue-500/10'
                 : isDark
                 ? 'bg-slate-800/50 border-slate-700'
@@ -146,14 +146,13 @@ export const InterviewConfigStep: React.FC<Props> = ({ formData, updateForm, isD
             <div className="flex items-center gap-3">
               <Code2 className="w-5 h-5 text-blue-500" />
               <div>
-                {/* <div className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Enable Live Code Sandbox</div> */}
                 <div className={`text-[14px] ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 Provides code editor inside interview</div>
               </div>
             </div>
             <input
               type="checkbox"
-              checked={formData.includeCodingEnvironment}
+              checked={formData.isExperienced}
               onChange={() => {}}
               className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500"
             />
@@ -170,8 +169,8 @@ export const InterviewConfigStep: React.FC<Props> = ({ formData, updateForm, isD
           {/* <LinkIcon className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" /> */}
           <textarea
             placeholder="Describe the job your looking for and specific requirements here..."
-            value={formData.notesOrSpecificJobUrl}
-            onChange={(e) => updateForm({ notesOrSpecificJobUrl: e.target.value })}
+            value={formData.jobDescription}
+            onChange={(e) => updateForm({ jobDescription: e.target.value })}
             className={`w-full p-3 h-32 rounded-xl border text-sm font-medium 
               transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               isDark 

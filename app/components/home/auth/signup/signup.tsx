@@ -30,7 +30,7 @@ const SignUp: React.FC = () => {
       const isAuthenticated = Cookies.get('isAuthenticated');
 
       if (isAuthenticated && userId && token) {
-        router.push('/dashboard/instance/main');
+        router.push('/dashboard');
       } 
     
   }, []);
@@ -175,13 +175,13 @@ const SignUp: React.FC = () => {
         />
         <label htmlFor="agreedToTerms" className="ml-3 block text-sm text-indigo-50">
           I agree to the{' '}
-          <Link href="/dashboard/terms" target="_blank"  rel="noreferrer" className="text-brand-primary text-blue-400 hover:underline" 
+          <Link href="/terms" target="_blank"  rel="noreferrer" className="text-brand-primary text-blue-400 hover:underline" 
           // target="_blank" rel="noopener noreferrer"
           >
             Terms & Conditions
           </Link>{' '}
           and{' '}
-          <Link href="/dashboard/privacy" target="_blank"  rel="noreferrer" className="text-brand-primary text-blue-400 hover:underline"
+          <Link href="/privacy" target="_blank"  rel="noreferrer" className="text-brand-primary text-blue-400 hover:underline"
           //  target="_blank" rel="noopener noreferrer"
            >
             Privacy Policy

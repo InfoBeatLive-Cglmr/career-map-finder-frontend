@@ -50,7 +50,7 @@ const ResetPasswordVerificationScreen: React.FC = () => {
       const isAuthenticated = Cookies.get('isAuthenticated');
 
       if (isAuthenticated && userId && token) {
-        router.push('/dashboard/instance/main');
+        router.push('/dashboard');
       } 
       
       if (!isTimerActive) {
@@ -111,7 +111,7 @@ const ResetPasswordVerificationScreen: React.FC = () => {
         setSuccess(response.message || 'OTP verified successfully!');
         
         setTimeout(() => {
-          router.replace('/dashboard/instance/main');
+          router.replace('/dashboard');
         }, 100);
       } else {
         setError(response.error || 'Invalid OTP. Please try again.');

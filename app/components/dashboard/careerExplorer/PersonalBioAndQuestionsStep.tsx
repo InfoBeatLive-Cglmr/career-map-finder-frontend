@@ -1,6 +1,5 @@
 import React from 'react';
 import { CareerExplorerFormData } from './types';
-import { User, HelpCircle, Sparkles } from 'lucide-react';
 
 interface Props {
   formData: CareerExplorerFormData;
@@ -18,8 +17,8 @@ export const PersonalBioAndQuestionsStep: React.FC<Props> = ({ formData, updateF
         <textarea
           rows={4}
           placeholder="Tell a bit about yourself: your strengths, what you enjoy doing, what frustrates you, family expectations, or financially relevant constraints..."
-          value={formData.personalBioAndBackground}
-          onChange={(e) => updateForm({ personalBioAndBackground: e.target.value })}
+          value={formData.personalBackground}
+          onChange={(e) => updateForm({ personalBackground: e.target.value })}
           className={`w-full p-4 rounded-xl border text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
             isDark 
               ? 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500' 
@@ -35,8 +34,8 @@ export const PersonalBioAndQuestionsStep: React.FC<Props> = ({ formData, updateF
         <textarea
           rows={3}
           placeholder="e.g., How competitive is Engineering in my country?  What are the subject combinations for Medicine in my country? What are realistic starting salaries?"
-          value={formData.careerInspirationsOrQuestions}
-          onChange={(e) => updateForm({ careerInspirationsOrQuestions: e.target.value })}
+          value={formData.specificQuestions}
+          onChange={(e) => updateForm({ specificQuestions: e.target.value })}
           className={`w-full p-4 rounded-xl border text-sm transition-colors focus:outline-none 
             focus:ring-2 focus:ring-blue-500 ${
             isDark 

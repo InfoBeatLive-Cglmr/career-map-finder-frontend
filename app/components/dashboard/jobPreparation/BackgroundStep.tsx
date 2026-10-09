@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
-import { JobPrepFormData } from './types';
-import { SUGGESTED_SKILLS } from './constants';
-import { GraduationCap, Award, Plus, X, FileText, Sparkles } from 'lucide-react';
+import { GraduationCap, Plus, X, Sparkles } from 'lucide-react';
+import { CreateInterviewSessionInput } from '@/app/utils/job-preparation/interviewSession';
 
 interface Props {
-  formData: JobPrepFormData;
-  updateForm: (fields: Partial<JobPrepFormData>) => void;
+  formData: CreateInterviewSessionInput;
+  updateForm: (fields: Partial<CreateInterviewSessionInput>) => void;
   isDark: boolean;
 }
 
 export const BackgroundStep: React.FC<Props> = ({ formData, updateForm, isDark }) => {
   const [skillInput, setSkillInput] = useState('');
 
-  const isStudentOrGrad = ['student_intern', 'recent_graduate'].includes(formData.experienceLevel);
+  const isStudentOrGrad = ['student_intern', 'recent_graduate'].includes(formData.careerStage.toLowerCase());
 
   const addSkill = (skill: string) => {
     const trimmed = skill.trim();
-    if (trimmed && !formData.keySkills.includes(trimmed)) {
-      updateForm({ keySkills: [...formData.keySkills, trimmed] });
+    if (trimmed && !formData.coreSkills.includes(trimmed)) {
+      updateForm({ coreSkills: [...formData.coreSkills, trimmed] });
       setSkillInput('');
     }
   };
 
   const removeSkill = (skillToRemove: string) => {
-    updateForm({ keySkills: formData.keySkills.filter((s) => s !== skillToRemove) });
+    updateForm({ coreSkills: formData.coreSkills.filter((s) => s !== skillToRemove) });
   };
 
   return (
@@ -52,8 +51,8 @@ export const BackgroundStep: React.FC<Props> = ({ formData, updateForm, isDark }
             <input
               type="text"
               placeholder="e.g. B.Sc. Computer Science"
-              value={formData.educationDegree}
-              onChange={(e) => updateForm({ educationDegree: e.target.value })}
+              value={formData.highestDegree}
+              onChange={(e) => updateForm({ highestDegree: e.target.value })}
               className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium 
                 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDark 
@@ -66,13 +65,14 @@ export const BackgroundStep: React.FC<Props> = ({ formData, updateForm, isDark }
 
         <div>
           <label className={`block text-sm font-semibold mb-2 ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-            {isStudentOrGrad ? 'University / Institution' : 'Most Recent Employer / Company'} <span className="text-red-500">*</span>
+            {isStudentOrGrad ? 'University / Institution' : 'Most Recent Employer / Company'} 
+            <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             placeholder={isStudentOrGrad ? 'e.g. havard University' : 'e.g. google, Remote Startup'}
-            value={formData.universitySchool}
-            onChange={(e) => updateForm({ universitySchool: e.target.value })}
+            value={formData.institution}
+            onChange={(e) => updateForm({ institution: e.target.value })}
             className={`w-full px-4 py-3 rounded-xl border text-sm font-medium 
             transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               isDark 
@@ -112,8 +112,8 @@ export const BackgroundStep: React.FC<Props> = ({ formData, updateForm, isDark }
             <input
               type="text"
               placeholder="e.g. Full Stack Developer"
-              value={formData.currentPreviousTitle}
-              onChange={(e) => updateForm({ currentPreviousTitle: e.target.value })}
+              value={formData.currentJobTitle}
+              onChange={(e) => updateForm({ currentJobTitle: e.target.value })}
               className={`w-full px-4 py-3 rounded-xl border text-sm font-medium 
                 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isDark 
@@ -156,7 +156,7 @@ export const BackgroundStep: React.FC<Props> = ({ formData, updateForm, isDark }
 
         {/* Selected Skill Tags */}
         <div className="flex flex-wrap gap-2 mb-3">
-          {formData.keySkills.map((skill) => (
+          {formData.coreSkills.map((skill) => (
             <span
               key={skill}
               className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 border ${
@@ -172,28 +172,6 @@ export const BackgroundStep: React.FC<Props> = ({ formData, updateForm, isDark }
             </span>
           ))}
         </div>
-
-        {/* Quick Suggestion Chips */}
-        {/* <div className="space-y-1">
-          <span className={`text-xs font-medium ${isDark ? 'text-slate-400' 
-          : 'text-slate-500'}`}>Quick Suggestions:</span>
-          <div className="flex flex-wrap gap-1.5">
-            {SUGGESTED_SKILLS.Software.concat(SUGGESTED_SKILLS.General).map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => addSkill(s)}
-                className={`text-[11px] px-2.5 py-1 rounded-md border transition-colors ${
-                  isDark
-                    ? 'border-slate-700 bg-slate-800/40 text-slate-400 hover:text-white hover:border-slate-500'
-                    : 'border-slate-300 bg-slate-100 text-slate-600 hover:text-slate-900 hover:border-slate-300'
-                }`}
-              >
-                + {s}
-              </button>
-            ))}
-          </div>
-        </div> */}
       </div>
 
       {/* Projects or Summary Textarea */}
@@ -206,8 +184,8 @@ export const BackgroundStep: React.FC<Props> = ({ formData, updateForm, isDark }
         <textarea
           rows={3}
           placeholder="Mention 1-2 major projects, systems you built, or results you delivered..."
-          value={formData.projectsOrHighlights}
-          onChange={(e) => updateForm({ projectsOrHighlights: e.target.value })}
+          value={formData.summaryOfAchievements}
+          onChange={(e) => updateForm({ summaryOfAchievements: e.target.value })}
           className={`w-full p-3 rounded-xl border text-sm transition-colors 
             focus:outline-none focus:ring-2 focus:ring-blue-500 ${
             isDark 

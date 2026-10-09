@@ -47,7 +47,7 @@ const SignUpVerificationScreen: React.FC = () => {
       const isAuthenticated = Cookies.get('isAuthenticated');
 
       if (isAuthenticated && userId && token) {
-        router.push('/dashboard/instance/main');
+        router.push('/dashboard');
       } 
       
       if (!isTimerActive) {
@@ -106,7 +106,7 @@ const SignUpVerificationScreen: React.FC = () => {
         setSuccess(response.message || 'OTP verified successfully!');
        
         setTimeout(() => {
-          router.replace('/dashboard/project/create/new');
+          router.replace('/dashboard/career-explorer');
         }, 100);
       } else {
         setError(response.error || 'Invalid OTP. Please try again.');

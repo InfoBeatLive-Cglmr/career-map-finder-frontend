@@ -279,3 +279,4 @@ export const mockInterviewEvaluationReports: Record<string, InterviewEvaluationR
 export const getEvaluationReportBySessionId = (sessionId: string): InterviewEvaluationReport | null => {
   return mockInterviewEvaluationReports[sessionId] || null;
 };
+
