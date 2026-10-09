@@ -30,7 +30,7 @@ export default function DashboardMainPage() {
         const isAuthenticated = Cookies.get('isAuthenticated');
   
         if (!userId && !token && !isAuthenticated) {
-          router.push('/auth/signin');
+         // router.push('/auth/signin');
         } 
       
     }, []);
