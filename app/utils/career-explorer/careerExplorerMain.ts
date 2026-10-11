@@ -297,6 +297,10 @@ async function fetchWithAuth<T>(
 ): Promise<T> {
   const token = getAccessToken();
 
+  // if (!token) {
+  //   throw new Error(`Unauthorized: No access token found. Request aborted`);
+  // }
+
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
