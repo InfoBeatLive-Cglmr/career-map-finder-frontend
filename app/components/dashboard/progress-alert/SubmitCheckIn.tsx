@@ -31,7 +31,7 @@ export default function AlertCheckInPage() {
   const params = useParams();
   const router = useRouter();
 
-  const alertId = (params?.id || params?.alertId) as string;
+  const alertId = params['alert-id'] as string;
 
   const [alert, setAlert] = useState<Alert | null>(null);
   const [activeResponse, setActiveResponse] = useState<AlertResponse | null>(null);

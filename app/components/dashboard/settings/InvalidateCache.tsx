@@ -1,6 +1,29 @@
 import Cookies from "js-cookie";
 import { updateResponseApi } from "@/app/utils/account/updateResponse";
 
+const USER_RESPONSE_KEY_PREFIX = "user_profile_";
+
+export const userStorage = {
+  // Save user response/profile details
+  saveUserData(userId: string, data: any): void {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(`${USER_RESPONSE_KEY_PREFIX}${userId}`, JSON.stringify(data));
+  },
+
+  // Get user response/profile details
+  getUserData(userId: string): any | null {
+    if (typeof window === "undefined") return;
+    const cached = localStorage.getItem(`${USER_RESPONSE_KEY_PREFIX}${userId}`);
+    return cached ? JSON.parse(cached) : null;
+  },
+
+  // Clear user data (on logout or cache invalidation)
+  clearUserData(userId: string): void {
+    if (typeof window === "undefined") return;
+    localStorage.removeItem(`${USER_RESPONSE_KEY_PREFIX}${userId}`);
+  }
+};
+
 export const syncUpdateResponsesAndInvalidateCache = async () => {
   try {
     const userId = Cookies.get("userId");
@@ -22,6 +45,7 @@ export const syncUpdateResponsesAndInvalidateCache = async () => {
       dashboardsUpdate,
       settingsUpdate,
       notificationUpdate,
+      user,
     } = updates;
 
     const storage = typeof window !== "undefined" ? window.localStorage : null;
@@ -108,6 +132,10 @@ export const syncUpdateResponsesAndInvalidateCache = async () => {
         path: "/",
         expires: 30,
       });
+    }
+
+    if (user) {
+      userStorage.saveUserData(userId, user);
     }
 
     // =========================

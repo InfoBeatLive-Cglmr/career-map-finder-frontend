@@ -10,11 +10,12 @@ import { AcademicContextStep } from './AcademicContextStep';
 
 import { LifestyleAndPreferencesStep } from './LifestyleAndPreferencesStep';
 import { PersonalBioAndQuestionsStep } from './PersonalBioAndQuestionsStep';
-import { Compass, GraduationCap, Heart, MessageSquare, ArrowRight, ArrowLeft, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Compass, GraduationCap, Heart, MessageSquare, ArrowRight, ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import Cookies from 'js-cookie';
 
 import { careerExplorerApi, CreateCareerExplorerIntakeInput, IntakeWithReportResponse } from '@/app/utils/career-explorer/careerExplorerMain';
 import { syncUpdateResponsesAndInvalidateCache } from '../settings/InvalidateCache';
+import { useRouter } from 'next/navigation';
 
 const INITIAL_FORM_DATA: CareerExplorerFormData = {
   userId: Cookies.get('userId') || '',
@@ -46,6 +47,7 @@ export default function CareerExplorerForm() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [apiResponse, setApiResponse] = useState<IntakeWithReportResponse | null>(null);
+   const router = useRouter();
 
   const updateForm = (fields: Partial<CareerExplorerFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }));
@@ -95,6 +97,7 @@ export default function CareerExplorerForm() {
       const response = await careerExplorerApi.createIntakeAndGenerateReport(payload);
       syncUpdateResponsesAndInvalidateCache();
       setApiResponse(response);
+      router.push('/dashboard');
     } catch (error: any) {
       console.error('Failed to submit career intake:', error);
       setErrorMessage(
@@ -111,6 +114,21 @@ export default function CareerExplorerForm() {
     { number: 3, title: 'Lifestyle & Priorities', icon: Heart },
     { number: 4, title: 'Personal Bio & Doubts', icon: MessageSquare },
   ];
+
+  
+    if (isSubmitting) {
+      return (
+        <div className={`min-h-screen flex flex-col items-center justify-center transition-colors duration-300 ${
+          isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+        }`}>
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-indigo-500/10 border 
+           border-indigo-500/20 text-indigo-500 font-semibold">
+            <Loader2 className="w-6 h-6 animate-spin" />
+            <span>Exploring Career Report...</span>
+          </div>
+        </div>
+      );
+    }
 
   return (
     <div className={`min-h-screen transition-colors ${

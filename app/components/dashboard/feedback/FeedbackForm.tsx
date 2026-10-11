@@ -27,6 +27,7 @@ export const FeedbackForm: React.FC<ComponentProps> = ({ isDark }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsSubmitting(true);
 
     try {
       const response = await feedbackApi.create({

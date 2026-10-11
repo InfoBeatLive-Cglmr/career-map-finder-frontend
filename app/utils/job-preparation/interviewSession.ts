@@ -256,7 +256,7 @@ export const interviewSessionApi = {
     userId: string
   ): Promise<MultipleInterviewSessionResponse> {
     return fetchWithAuth<MultipleInterviewSessionResponse>(
-      `/job-preparation/interview-sessions/interview-sessions/${userId}`,
+      `/job-preparation/interview-sessions/interview-sessions/user/${userId}`,
       {
         method: "GET",
       }

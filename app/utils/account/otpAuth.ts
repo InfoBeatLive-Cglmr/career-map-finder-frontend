@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { getAccessToken } from './auth';
 import { setTokensAndUserId } from './auth';
 import { BASE_URL } from './auth';
+import { syncUpdateResponsesAndInvalidateCache, userStorage } from '@/app/components/dashboard/settings/InvalidateCache';
 
 const api = axios.create({
     baseURL: BASE_URL,
@@ -75,6 +76,9 @@ const handleAuthResponse = (response: OtpResponse): void => {
       Cookies.set('lastDashboardsUpdate', now, { path: '/', expires: 30 });
       Cookies.set('lastSettingsUpdate', now, { path: '/', expires: 30 });
       Cookies.set('lastNotificationUpdate', now, { path: '/', expires: 30 });
+      
+      userStorage.clearUserData(userId);
+      syncUpdateResponsesAndInvalidateCache()
 
     }
   } else if (error) {

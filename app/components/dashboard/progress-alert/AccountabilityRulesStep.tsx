@@ -31,7 +31,7 @@ export const AccountabilityRulesStep: React.FC<Props> = ({ formData, updateForm,
 
         <div>
           <label className={`block text-xs font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            Preferred Daily Dispatch Time
+            Preferred Daily Dispatch Time (UTC)
           </label>
           <input
             type="time"

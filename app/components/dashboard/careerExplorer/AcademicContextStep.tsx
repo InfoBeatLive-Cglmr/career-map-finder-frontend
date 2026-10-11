@@ -146,11 +146,13 @@ export const AcademicContextStep: React.FC<Props> = ({ formData, updateForm, isD
               : 'bg-white border-slate-300 text-slate-900'
           }`}
         >
-          <option value="bachelors">Bachelor's Degree (4 Years)</option>
-          <option value="direct_doctorate">Doctorate / MD / PharmD / MBBS Direct Path</option>
-          <option value="masters">Master's / Post-Graduate Specialization</option>
-          <option value="diploma_bootcamp">Practical Diploma / Technical Certification / Bootcamp</option>
-          <option value="undecided">Help me choose the best degree option</option>
+          <option value="BACHELORS">Bachelor's Degree (4 Years)</option>
+          <option value="DOCTORATE_PHD">Doctorate / MD / PharmD / MBBS Direct Path</option>
+          <option value="MASTERS">Master's / Post-Graduate Specialization</option>
+          <option value="DIPLOMA">Practical Diploma / Technical Certification / Bootcamp</option>
+          <option value="FELLOWSHIP_SPECIALIZATION">Fellowship Specialization</option>
+          <option value="PROFESSIONAL_CERTIFICATION">Professional Certification</option>
+          {/* <option value="undecided">Help me choose the best degree option</option> */}
         </select>
       </div>
     </div>

@@ -7,7 +7,7 @@ import { AlertFormData } from './types';
 import { CategorySelectionStep } from './CategorySelectionStep';
 import { DynamicCategoryFieldsStep } from './DynamicCategoryFieldsStep';
 import { AccountabilityRulesStep } from './AccountabilityRulesStep';
-import { Bell, ArrowLeft, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Bell, ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { alertApi, CreateAlertInput } from '@/app/utils/account/alert';
 import Cookies from 'js-cookie';
 
@@ -126,6 +126,22 @@ export default function AutonomousAlertsPage() {
       setIsSubmitting(false);
     }
   };
+
+  
+    if (isSubmitting) {
+      return (
+        <div className={`min-h-screen flex flex-col items-center justify-center transition-colors duration-300 ${
+          isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+        }`}>
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-indigo-500/10 border 
+           border-indigo-500/20 text-indigo-500 font-semibold">
+            <Loader2 className="w-6 h-6 animate-spin" />
+            <span>Creating New Alert Session...</span>
+          </div>
+        </div>
+      );
+    }
+
 
   return (
     <div className={`min-h-screen transition-colors ${

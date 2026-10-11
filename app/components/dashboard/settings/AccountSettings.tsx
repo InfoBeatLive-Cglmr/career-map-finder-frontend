@@ -235,10 +235,10 @@ export default function AccountSettingsPage() {
       fieldOfInterest: academic.fieldOfInterest,
       institutionName: academic.institutionName,
       graduationYear: academic.graduationYear
-        ? Number(academic.graduationYear)
+        ? String(academic.graduationYear)
         : undefined,
       targetPercentage: academic.targetPercentage
-        ? Number(academic.targetPercentage)
+        ? String(academic.targetPercentage)
         : undefined,
     };
 
@@ -303,38 +303,6 @@ export default function AccountSettingsPage() {
       <div className="space-y-6 max-w-6xl mx-auto ">
 
          <div className="grid grid-cols-1 lg:grid-cols-12 ">
-
-          
-        {/* Global Feedback Banner */}
-        {statusMessage && (
-          <div
-            className={`p-4 rounded-xl border text-sm flex items-center justify-between gap-3 ${
-              statusMessage.type === 'success'
-                ? isDark
-                  ? 'bg-emerald-950/50 border-emerald-800 text-emerald-300'
-                  : 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : isDark
-                ? 'bg-red-950/50 border-red-800 text-red-300'
-                : 'bg-red-50 border-red-200 text-red-800'
-            }`}
-          >
-            <div className="flex items-center gap-2.5">
-              {statusMessage.type === 'success' ? (
-                <CheckCircle2 className="w-5 h-5 shrink-0" />
-              ) : (
-                <AlertCircle className="w-5 h-5 shrink-0" />
-              )}
-              <span>{statusMessage.text}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setStatusMessage(null)}
-              className="text-xs font-bold underline"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
 
           <main className="lg:col-span-12">
             <form onSubmit={handleSave}>
@@ -644,6 +612,50 @@ export default function AccountSettingsPage() {
                   </div>
                 </div>
 
+
+        {/* Global Feedback Banner */}
+        {statusMessage && (
+          <div
+            className={`p-4 rounded-xl border mt-6 text-sm flex items-center justify-between gap-3 ${
+              statusMessage.type === 'success'
+                ? isDark
+                  ? 'bg-emerald-950/50 border-emerald-800 text-emerald-300'
+                  : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                : isDark
+                ? 'bg-red-950/50 border-red-800 text-red-300'
+                : 'bg-red-50 border-red-200 text-red-800'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              {statusMessage.type === 'success' ? (
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
+              ) : (
+                <AlertCircle className="w-5 h-5 shrink-0" />
+              )}
+              <span>{statusMessage.text}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setStatusMessage(null)}
+              className="text-xs font-bold underline"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        
+              <div className="mt-6 flex items-center justify-end gap-3">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs 
+                  font-bold shadow-md shadow-indigo-500/20 flex items-center gap-2 transition-all"
+                >
+                  <Save className="w-4 h-4" />
+                 {saving ? 'Saving Changes...' : 'Save Changes'} 
+                </button>
+              </div>
            
                 <div className={`p-6 mt-6 rounded-2xl border space-y-6 ${isDark ? 'bg-slate-950 border-slate-700' 
                   : 'bg-white border-slate-300'}`}>
@@ -682,17 +694,6 @@ export default function AccountSettingsPage() {
                   </div>
                 </div>
             
-              <div className="mt-6 flex items-center justify-end gap-3">
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs 
-                  font-bold shadow-md shadow-indigo-500/20 flex items-center gap-2 transition-all"
-                >
-                  <Save className="w-4 h-4" />
-                  Save Changes
-                </button>
-              </div>
             </form>
           </main>
         </div>

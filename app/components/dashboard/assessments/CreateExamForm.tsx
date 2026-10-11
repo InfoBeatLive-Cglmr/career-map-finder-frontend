@@ -1,33 +1,55 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, ArrowRight, Award, BrainCircuit, CheckCircle2, ChevronRight, Globe, GraduationCap, Layers, MapPin, Target } from 'lucide-react';
+import { AlertCircle, ArrowRight, Award, BrainCircuit, CheckCircle2, ChevronRight, Globe, GraduationCap, Layers, Loader2, MapPin, Target } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 import { useCreateExamForm } from './useCreateExamForm';
 import { COUNTRIES, ACADEMIC_EXAMS_BY_COUNTRY, PROFESSIONAL_DOMAINS } from './constants';
 import { LANGUAGES } from './languages';
+import { useRouter } from 'next/navigation';
 
 export default function CreateExamForm() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const { state, actions } = useCreateExamForm();
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true)
 
     try {
       await actions.handleSubmit(e, async (payload) => {
-        console.log('Exam Configuration Payload:', payload);
-        alert('Exam profile saved! We are creating your tailored exam questions.');
+        
+        router.push('/dashboard');
       });
     } catch (error) {
       console.error('Failed to submit exam configuration:', error);
       alert('Failed to save exam profile. Please try again.');
+    } finally{
+       setIsSubmitting(false)
     }
   };
+
+  
+  
+    if (isSubmitting) {
+      return (
+        <div className={`min-h-screen flex flex-col items-center justify-center transition-colors duration-300 ${
+          isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+        }`}>
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-indigo-500/10 border 
+           border-indigo-500/20 text-indigo-500 font-semibold">
+            <Loader2 className="w-6 h-6 animate-spin" />
+            <span>Creating Assessments Session...</span>
+          </div>
+        </div>
+      );
+    }
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${ isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900' }`}>

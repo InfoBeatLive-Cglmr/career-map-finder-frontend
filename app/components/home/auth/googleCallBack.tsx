@@ -3,6 +3,7 @@ import { CheckCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { syncUpdateResponsesAndInvalidateCache, userStorage } from '../../dashboard/settings/InvalidateCache';
 
 const GoogleCallBack: React.FC = () => {
   const router = useRouter();
@@ -12,16 +13,19 @@ const GoogleCallBack: React.FC = () => {
       const url = new URL(window.location.href); 
       const accessToken = url.searchParams.get('accessToken');
       const userId = url.searchParams.get('userId');
-      const companyId = url.searchParams.get('companyId');
-      return { accessToken, userId, companyId };
+      return { accessToken, userId };
     };
 
-    const { accessToken, userId, companyId } = extractParamsFromURL();
+    const { accessToken, userId } = extractParamsFromURL();
 
-    if (accessToken && userId && companyId) {
+    if (accessToken && userId) {
       Cookies.set('accessToken', accessToken, { path: '/', expires: 30 });
       Cookies.set('userId', userId, { path: '/', expires: 30 });
       Cookies.set('isAuthenticated', 'true', { path: '/', expires: 30 });
+      
+      userStorage.clearUserData(userId);
+      syncUpdateResponsesAndInvalidateCache()
+      
      
       if (typeof window.gtag !== 'undefined') {
         window.gtag('event', 'google  auth', {
@@ -32,14 +36,14 @@ const GoogleCallBack: React.FC = () => {
         });
       }
 
-      router.push('/dashboard/instance/main');
+      router.push('/dashboard');
     } else {
       router.push('/google/auth/error');
     }
   }, [router]);
 
   return (
-    <div className='font-bold bg-indigo-900 h-screen  border-green-500 py-32'>
+    <div className='font-bold bg-slate-950 h-screen  border-green-500 py-32'>
         <div className='flex justify-center items-center  mt-3'>
         <div className='flex flex-col text-green-500 rounded-xl p-10 border-4'>
         <button className='flex justify-center  m-1 p-1'><CheckCircle size={100} /></button>

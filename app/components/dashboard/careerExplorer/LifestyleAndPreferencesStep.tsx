@@ -67,11 +67,10 @@ export const LifestyleAndPreferencesStep: React.FC<Props> = ({ formData, updateF
                 : 'bg-white border-slate-300 text-slate-900'
             }`}
           >
-            <option value="remote">Fully Remote (Global / Location Independent)</option>
-            <option value="hybrid">Hybrid (2-3 days office / remote)</option>
-            <option value="office">Corporate Office Environment</option>
-            <option value="field_outdoor">On-Site / Hospital / Lab / Field Operations</option>
-            <option value="flexible">Open to Any Setup</option>
+            <option value="REMOTE">Fully Remote (Global / Location Independent)</option>
+            <option value="HYBRID">Hybrid (2-3 days office / remote)</option>
+            <option value="ON_SITE">Corporate Office Environment</option>
+            <option value="FLEXIBLE">Open to Any Setup</option>
           </select>
         </div>
 
@@ -90,9 +89,9 @@ export const LifestyleAndPreferencesStep: React.FC<Props> = ({ formData, updateF
                 : 'bg-white border-slate-300 text-slate-900'
             }`}
           >
-            <option value="standard">Standard (40 hrs/week)</option>
-            <option value="flexible">Flexible / Results-Based Hours</option>
-            <option value="high_intensity">High Intensity / High Reward (55+ hrs/week)</option>
+            <option value="STANDARD_40H">Standard (40 hrs/week)</option>
+            <option value="MODERATE_50H">Flexible / Results-Based Hours</option>
+            <option value="HIGH_INTENSITY_60H_PLUS">High Intensity / High Reward (55+ hrs/week)</option>
           </select>
         </div>
       </div>

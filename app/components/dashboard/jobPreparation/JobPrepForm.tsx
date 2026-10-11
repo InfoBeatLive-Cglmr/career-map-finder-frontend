@@ -121,7 +121,7 @@ export default function JobPrepForm() {
 
       if (response && response.data && response.data.id) {
         // Redirect to the live session workspace
-        router.push(`/dashboard/interview-sessions/${response.data.id}`);
+        router.push(`/dashboard/job-preparation/interviews/${response.data.id}`);
       } else {
         throw new Error('Failed to initialize session. Missing session identifier.');
       }
@@ -140,6 +140,21 @@ export default function JobPrepForm() {
     { number: 2, title: 'Background & Skills', icon: User },
     { number: 3, title: 'Interview Setup', icon: Sliders },
   ];
+
+  
+    if (isSubmitting) {
+      return (
+        <div className={`min-h-screen flex flex-col items-center justify-center transition-colors duration-300 ${
+          isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+        }`}>
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-indigo-500/10 border 
+           border-indigo-500/20 text-indigo-500 font-semibold">
+            <Loader2 className="w-6 h-6 animate-spin" />
+            <span>Creating Interview Session...</span>
+          </div>
+        </div>
+      );
+    }
 
   return (
     <div
@@ -315,7 +330,7 @@ export default function JobPrepForm() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Generating Session...</span>
+                    <span>Creating Session...</span>
                   </>
                 ) : (
                   <>

@@ -138,7 +138,7 @@ export const alertApi = {
    * Create a new alert milestone configuration
    */
   async create(data: CreateAlertInput): Promise<{ status: string; data: Alert }> {
-    return fetchWithAuth<{ status: string; data: Alert }>("/alerts", {
+    return fetchWithAuth<{ status: string; data: Alert }>("/account/alerts/alert", {
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -148,7 +148,7 @@ export const alertApi = {
    * Get all active & past alerts for a specific user ID
    */
   async getByUserId(userId: string): Promise<{ status: string; data: Alert[] }> {
-    return fetchWithAuth<{ status: string; data: Alert[] }>(`/alerts/user/${userId}`, {
+    return fetchWithAuth<{ status: string; data: Alert[] }>(`/account/alerts/alert/user/${userId}`, {
       method: "GET",
     });
   },
@@ -157,7 +157,7 @@ export const alertApi = {
    * Get a single alert record by Alert ID
    */
   async getById(id: string): Promise<{ status: string; data: Alert }> {
-    return fetchWithAuth<{ status: string; data: Alert }>(`/alerts/${id}`, {
+    return fetchWithAuth<{ status: string; data: Alert }>(`/account/alerts/alert/${id}`, {
       method: "GET",
     });
   },
@@ -166,7 +166,7 @@ export const alertApi = {
    * Update an existing alert configuration by Alert ID
    */
   async update(id: string, data: UpdateAlertInput): Promise<{ status: string; data: Alert }> {
-    return fetchWithAuth<{ status: string; data: Alert }>(`/alerts/${id}`, {
+    return fetchWithAuth<{ status: string; data: Alert }>(`/account/alerts/alert/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
     });
@@ -176,7 +176,7 @@ export const alertApi = {
    * Delete an alert configuration by Alert ID
    */
   async delete(id: string): Promise<{ status: string; message: string }> {
-    return fetchWithAuth<{ status: string; message: string }>(`/alerts/${id}`, {
+    return fetchWithAuth<{ status: string; message: string }>(`/account/alerts/alert/${id}`, {
       method: "DELETE",
     });
   },
@@ -185,7 +185,7 @@ export const alertApi = {
    * Submit a 60-second progress check-in response to update AI focus context
    */
   async submitCheckIn(data: SubmitCheckInInput): Promise<{ status: string; data: AlertResponse }> {
-    return fetchWithAuth<{ status: string; data: AlertResponse }>("/alerts/response/checkin", {
+    return fetchWithAuth<{ status: string; data: AlertResponse }>("/account/alerts/alert/response/checkin", {
       method: "POST",
       body: JSON.stringify(data),
     });

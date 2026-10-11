@@ -336,7 +336,7 @@ export const careerExplorerApi = {
   async createIntakeAndGenerateReport(
     data: CreateCareerExplorerIntakeInput
   ): Promise<IntakeWithReportResponse> {
-    return fetchWithAuth<IntakeWithReportResponse>("/intakes", {
+    return fetchWithAuth<IntakeWithReportResponse>("/career-explorer/intakes", {
       method: "POST",
       body: JSON.stringify(data),
     });

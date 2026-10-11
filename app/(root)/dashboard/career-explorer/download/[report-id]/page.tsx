@@ -1,13 +1,13 @@
-import { DashboardLayoutWrapper } from "@/app/components/dashboard/DashboardLayoutWrapper";
+//import { DashboardLayoutWrapper } from "@/app/components/dashboard/DashboardLayoutWrapper";
 import ReportDownloadPage from "@/app/components/dashboard/careerExplorer/reports/ReportDownloadPage";
 
 
 const page = () => {
   return (
     <div>
-    <DashboardLayoutWrapper>
+    {/* <DashboardLayoutWrapper> */}
       <ReportDownloadPage />
-    </DashboardLayoutWrapper>
+    {/* </DashboardLayoutWrapper> */}
     </div>
   )
 }

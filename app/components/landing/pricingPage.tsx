@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, DollarSign, IndianRupee,  
 Loader2, AlertCircle } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { paymentApi, CreateCheckoutInput } from '../../utils/account/payment'; 
+import { userStorage } from '../dashboard/settings/InvalidateCache';
+import Cookies from "js-cookie";
 
 export interface PricingTier {
   id: string;
@@ -76,16 +78,24 @@ interface PricingSectionProps {
   userId?: string;
 }
 
-export const PricingSection: React.FC<PricingSectionProps> = ({
-  userEmail = '',
-  userId = '',
-}) => {
+export const PricingSection: React.FC<PricingSectionProps> = () => {
   const { theme } = useTheme();
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [billingCycle, setBillingCycle] = useState<'Monthly' | 'Yearly'>('Monthly');
   const [loadingTierId, setLoadingTierId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const [userData, setUserData] = useState<any>(null);
   const isDark = theme === 'dark';
+  const userId = Cookies.get("userId") as any;
+
+  useEffect(() => {
+    if (!userId) return;
+
+    // Access the stored details instantly from localStorage
+    const cachedDetails = userStorage.getUserData(userId);
+    if (cachedDetails) {
+      setUserData(cachedDetails);
+    }
+  }, []);
 
   const handleCheckout = async (tier: PricingTier) => {
     // Handle Free Tier locally
@@ -97,14 +107,14 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
     setLoadingTierId(tier.id);
     setErrorMessage(null);
 
-    const price = billingCycle === 'annual' ? tier.priceAnnual : tier.priceMonthly;
+    const price = billingCycle === 'Yearly' ? tier.priceAnnual : tier.priceMonthly;
 
     const payload: CreateCheckoutInput = {
-      email: userEmail,
+      email: userData.email,
       userId: userId,
       amount: price,
       type: tier.type,
-      billingCycle: billingCycle === 'annual' ? 'yearly' : 'monthly',
+      billingCycle: billingCycle === 'Yearly' ? 'Yearly' : 'Monthly',
     };
 
     try {
@@ -112,17 +122,17 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
 
       if (tier.type === 'Basic') {
         response =
-          billingCycle === 'annual'
+          billingCycle === 'Yearly'
             ? await paymentApi.createBasicYearlyCheckout(payload)
             : await paymentApi.createBasicMonthlyCheckout(payload);
       } else if (tier.type === 'Plus') {
         response =
-          billingCycle === 'annual'
+          billingCycle === 'Yearly'
             ? await paymentApi.createPlusYearlyCheckout(payload)
             : await paymentApi.createPlusMonthlyCheckout(payload);
       } else if (tier.type === 'Pro') {
         response =
-          billingCycle === 'annual'
+          billingCycle === 'Yearly'
             ? await paymentApi.createProYearlyCheckout(payload)
             : await paymentApi.createProMonthlyCheckout(payload);
       } else {
@@ -130,6 +140,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
       }
 
       if (response && response.checkoutUrl) {
+        userStorage.clearUserData(userId);
         window.location.href = response.checkoutUrl;
       } else {
         throw new Error('Checkout session URL was not returned.');
@@ -187,9 +198,9 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
             }`}
           >
             <button
-              onClick={() => setBillingCycle('monthly')}
+              onClick={() => setBillingCycle('Monthly')}
               className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-                billingCycle === 'monthly'
+                billingCycle === 'Monthly'
                   ? 'bg-indigo-600 text-white shadow-sm'
                   : isDark
                   ? 'text-slate-400 hover:text-white'
@@ -199,16 +210,16 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
               Monthly
             </button>
             <button
-              onClick={() => setBillingCycle('annual')}
+              onClick={() => setBillingCycle('Yearly')}
               className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                billingCycle === 'annual'
+                billingCycle === 'Yearly'
                   ? 'bg-indigo-600 text-white shadow-sm'
                   : isDark
                   ? 'text-slate-400 hover:text-white'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span>Annually</span>
+              <span>Yearly</span>
               <span
                 className={`text-[10px] px-1.5 py-0.5 rounded border ${
                   isDark
@@ -224,7 +235,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
 
         {/* Global Error Banner */}
         {errorMessage && (
-          <div className="max-w-xl mx-auto mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 flex items-center gap-3 text-sm">
+          <div className="max-w-6xl mx-auto mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 flex items-center gap-3 text-sm">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span className="flex-1">{errorMessage}</span>
             <button
@@ -240,7 +251,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
           {PRICING_TIERS.map((tier) => {
             const displayPrice =
-              billingCycle === 'annual' ? tier.priceAnnual : tier.priceMonthly;
+              billingCycle === 'Yearly' ? tier.priceAnnual : tier.priceMonthly;
             const isLoading = loadingTierId === tier.id;
 
             return (
@@ -300,9 +311,9 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
                     >
                       {tier.priceMonthly === 0
                         ? ''
-                        : billingCycle === 'annual'
-                        ? '/year'
-                        : '/month'}
+                        : billingCycle === 'Yearly'
+                        ? '/Yearly'
+                        : '/Monthly'}
                     </span>
                   </div>
 

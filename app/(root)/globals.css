@@ -126,3 +126,11 @@ html {
     -ms-overflow-style: none;
 }
 
+
+@media print {
+  .a4-page-section {
+    break-after: always !important;
+    page-break-after: always !important;
+    height: auto !important;
+  }
+}

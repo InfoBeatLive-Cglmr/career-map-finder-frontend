@@ -102,6 +102,10 @@ export const logout = async (): Promise<{ success: boolean; message?: string }> 
       Cookies.remove('userId', { path: '/' });
       Cookies.remove('isAuthenticated', { path: '/', });
 
+      if (typeof window !== "undefined") {
+           localStorage.clear();
+      }
+
       return { success: true, message: responseData.message };
     } else {
       console.error('Error during logout:', response.data.error);

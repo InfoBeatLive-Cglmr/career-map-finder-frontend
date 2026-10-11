@@ -146,7 +146,7 @@ export const userManagementApi = {
     }
 
     const queryString = queryParams.toString();
-    const endpoint = `/getAllUsers${queryString ? `?${queryString}` : ""}`;
+    const endpoint = `/account/auth/getUserDetails/getAllUsers${queryString ? `?${queryString}` : ""}`;
 
     return fetchWithAuth<GetAllUsersApiResponse>(endpoint, {
       method: "GET",
@@ -160,7 +160,7 @@ export const userManagementApi = {
     userId: string
   ): Promise<SingleUserApiResponse> {
     return fetchWithAuth<SingleUserApiResponse>(
-      `/userInfo/${userId}`,
+      `/account/auth/getUserDetails/userInfo/${userId}`,
       {
         method: "GET",
       }
@@ -175,7 +175,7 @@ export const userManagementApi = {
     data: UpdateUserInput
   ): Promise<BasicUserMutationApiResponse> {
     return fetchWithAuth<BasicUserMutationApiResponse>(
-      `/update-user/${userId}`,
+      `/account/auth/getUserDetails/update-user/${userId}`,
       {
         method: "PUT",
         body: JSON.stringify(data),
@@ -190,7 +190,7 @@ export const userManagementApi = {
     userId: string
   ): Promise<BasicUserMutationApiResponse> {
     return fetchWithAuth<BasicUserMutationApiResponse>(
-      `/deleteAccount/${userId}`,
+      `/account/auth/getUserDetails/deleteAccount/${userId}`,
       {
         method: "DELETE",
       }
