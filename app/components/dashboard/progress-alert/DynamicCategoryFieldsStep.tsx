@@ -45,6 +45,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
                 type="text"
                 placeholder="e.g. Physical Sciences, Business Administration"
                 value={formData.academicStream || ''}
+                required
                 onChange={(e) => updateForm({ academicStream: e.target.value })}
                 className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
                   isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
@@ -62,6 +63,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
                 max={80}
                 placeholder="e.g. 15"
                 value={formData.currentWeeklyStudyHours || ''}
+                required
                 onChange={(e) => updateForm({ currentWeeklyStudyHours: Number(e.target.value) })}
                 className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
                   isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
@@ -80,6 +82,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
                 placeholder="Add subject (e.g., Organic Chemistry, Calculus III) and press Enter"
                 value={topicInput}
                 onChange={(e) => setTopicInput(e.target.value)}
+                required
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTagItem('weakestSubjects', topicInput))}
                 className={`flex-1 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
                   isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
@@ -120,6 +123,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
               </label>
               <select
                 value={formData.examRegistrationStatus || 'registered'}
+                required
                 onChange={(e) => updateForm({ examRegistrationStatus: e.target.value as any })}
                 className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
                   isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
@@ -138,6 +142,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
               <input
                 type="text"
                 placeholder="e.g. 100%, 1450 SAT, 850/1000 AWS"
+                required
                 value={formData.targetScoreGoal || ''}
                 onChange={(e) => updateForm({ targetScoreGoal: e.target.value })}
                 className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
@@ -156,6 +161,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
                 type="text"
                 placeholder="Add topic (e.g. Quantitative Aptitude, AWS VPC Networking) and press Enter"
                 value={topicInput}
+                required
                 onChange={(e) => setTopicInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTagItem('priorityTopics', topicInput))}
                 className={`flex-1 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
@@ -200,6 +206,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
                 min={1}
                 max={50}
                 placeholder="e.g. 10 applications / week"
+                required
                 value={formData.weeklyApplicationGoal || ''}
                 onChange={(e) => updateForm({ weeklyApplicationGoal: Number(e.target.value) })}
                 className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
@@ -215,6 +222,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
               <input
                 type="text"
                 placeholder="e.g. Frontend Engineer, Product Manager"
+                required
                 value={formData.targetRoleTitle || ''}
                 onChange={(e) => updateForm({ targetRoleTitle: e.target.value })}
                 className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
@@ -233,6 +241,7 @@ export const DynamicCategoryFieldsStep: React.FC<Props> = ({ formData, updateFor
                 type="text"
                 placeholder="Add skill focus (e.g. System Design, STAR Behavioral, Live Coding) and press Enter"
                 value={topicInput}
+                required
                 onChange={(e) => setTopicInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTagItem('focusInterviewSkill', topicInput))}
                 className={`flex-1 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${

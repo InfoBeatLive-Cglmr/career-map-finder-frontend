@@ -30,15 +30,17 @@ export const AccountabilityRulesStep: React.FC<Props> = ({ formData, updateForm,
         </div>
 
         <div>
-          <label className={`block text-xs font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+          <label className={`block text-xs font-bold uppercase tracking-wider mb-1.5 
+            ${isDark ? 'text-slate-400' : 'text-slate-600'} `}>
             Preferred Daily Dispatch Time (UTC)
           </label>
           <input
             type="time"
             value={formData.preferredAlertTime}
+            required
             onChange={(e) => updateForm({ preferredAlertTime: e.target.value })}
-            className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
-              isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
+            className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none transition-all ${
+              isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-300 border-slate-300 text-slate-900'
             }`}
           />
         </div>
@@ -66,6 +68,7 @@ export const AccountabilityRulesStep: React.FC<Props> = ({ formData, updateForm,
           rows={3}
           placeholder="Mention specific description about the primary objective."
           value={formData.additionalContextNotes || ''}
+          required
           onChange={(e) => updateForm({ additionalContextNotes: e.target.value })}
           className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${
             isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'

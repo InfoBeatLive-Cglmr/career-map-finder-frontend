@@ -90,7 +90,8 @@ export const CategorySelectionStep: React.FC<Props> = ({ formData, updateForm, i
         </div>
 
         <div>
-          <label className={`block text-xs font-bold uppercase tracking-wider mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+          <label className={`block text-xs font-bold uppercase tracking-wider mb-1.5 
+            ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             Target Deadline Of The Alert <span className="text-rose-500">*</span>
           </label>
           <div className="relative">
@@ -100,10 +101,8 @@ export const CategorySelectionStep: React.FC<Props> = ({ formData, updateForm, i
               required
               value={formData.targetDate}
               onChange={(e) => updateForm({ targetDate: e.target.value })}
-              className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:outline-none 
-                focus:ring-2 focus:ring-indigo-500 transition-all ${
-                isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
-              }`}
+              className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-xs sm:text-sm   transition-all 
+              ${isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-300 border-slate-300 text-slate-900'}`}
             />
           </div>
         </div>

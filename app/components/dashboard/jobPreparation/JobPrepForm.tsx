@@ -31,7 +31,7 @@ const INITIAL_FORM_DATA: CreateInterviewSessionInput = {
   industryDomain: '',
   careerStage: 'STUDENT_INTERN',
   workArrangement: ['ON_SITE'],
-  targetCountries: ['global'],
+  targetCountries: ['🌐'],
   isExperienced: false,
   highestDegree: '',
   institution: '',
@@ -75,14 +75,32 @@ export default function JobPrepForm() {
         setErrorMessage('Please specify your Industry / Domain.');
         return;
       }
+
+       if (!formData.targetCountries) {
+        setErrorMessage('Please choose at elast one target country');
+        return;
+      }
+
     }
 
     // Validation for Step 2
     if (step === 2) {
       if (!formData.highestDegree.trim()) {
-        setErrorMessage('Please specify your Highest Level of Education.');
+        setErrorMessage('Please All field is required.');
         return;
       }
+
+      if (formData.coreSkills.length === 0) {
+        setErrorMessage('Please skills must be entered and click on add.');
+        return;
+      }
+
+      
+      if (!formData.summaryOfAchievements.trim()) {
+        setErrorMessage('Please key archivement must be provided.');
+        return;
+      }
+
     }
 
     setStep((prev) => Math.min(prev + 1, 3));
@@ -100,6 +118,12 @@ export default function JobPrepForm() {
       setErrorMessage('Please select at least one question category for your session.');
       return;
     }
+   
+      if (!formData.jobDescription.trim() || formData.jobDescription.length < 100) {
+        setErrorMessage('Please provide the job description which you want practice this interview for, minimum 100 characters.');
+        return;
+      }
+    
 
     setIsSubmitting(true);
 
@@ -127,9 +151,7 @@ export default function JobPrepForm() {
       }
     } catch (error: any) {
       console.error('Error creating interview session:', error);
-      setErrorMessage(
-        error.message || 'An unexpected error occurred while setting up your interview session.'
-      );
+      setErrorMessage('An unexpected error occurred while setting up your interview session.' );
     } finally {
       setIsSubmitting(false);
     }

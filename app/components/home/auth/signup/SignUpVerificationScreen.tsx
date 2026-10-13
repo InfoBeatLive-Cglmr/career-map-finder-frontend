@@ -172,7 +172,7 @@ const SignUpVerificationScreen: React.FC = () => {
 
         <OTPInput otp={otp} setOtp={setOtp} disabled={isVerifying || isResending} />
 
-        <p className="text-sm text-indigo-600 text-center">
+        <p className="text-sm text-indigo-100 text-center">
           {isTimerActive ? `Resend available in ${countdown}s` : 'OTP Expired'}
         </p>
 

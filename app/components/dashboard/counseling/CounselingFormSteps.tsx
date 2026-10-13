@@ -219,9 +219,9 @@ export const StepGoalsAndChallenges: React.FC<StepProps> = ({ isDark, register, 
         <div>
           <label className={labelStyle}>Preferred Time Window</label>
           <select {...register('timeWindow')} className={inputStyle}>
-            <option value="morning">Morning (10:00 AM - 1:00 PM) UTC</option>
-            <option value="afternoon">Afternoon (2:00 PM - 5:00 PM) UTC</option>
-            <option value="evening">Evening (6:00 PM - 9:00 PM) UTC</option>
+            <option value="morning">Morning (10:00 AM - 1:00 PM)</option>
+            <option value="afternoon">Afternoon (2:00 PM - 5:00 PM)</option>
+            <option value="evening">Evening (6:00 PM - 9:00 PM)</option>
           </select>
         </div>
       </div>

@@ -7,8 +7,9 @@ import PasswordInput from '../_shared/PasswordInput';
 import ErrorMessage from '../_shared/ErrorMessage';
 import SuccessMessage from '../_shared/SuccessMessage';
 import GoogleSignIn from '../googleSignIn';
-import { auth, RegisterRequest } from '@/app/utils/account/auth';
+import { auth, RegisterRequest, ApiResponse } from '@/app/utils/account/auth';
 import { useRouter } from 'next/navigation';
+
 
 
 const SignUp: React.FC = () => {
@@ -92,13 +93,13 @@ const SignUp: React.FC = () => {
        if (response.success) {
        setSuccess(response.message || 'Registration successful! Please check your email for the OTP.');
         router.push(`/auth/signup/signup-verification?email=${encodeURIComponent(email)}`);
-       } else {
-        setError(response.error || response.message || 'Registration failed due to an unknown error.');
+       } else if (response.success === false) {
+        setError(response.error || 'Registration failed due to an unknown error.');
        }
       
       setSuccess('Account created successfully!');
     } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred during sign up.');
+      setError('User already exists and email is already verified');
     } finally {
       setLoading(false);
     }
@@ -118,7 +119,7 @@ const SignUp: React.FC = () => {
           onChange={(e) => setFullName(e.target.value)}
           className="w-full px-4 py-3 rounded-lg border border-indigo-700 bg-indigo-900 text-indigo-50
                      focus:ring-brand-primary focus:border-brand-primary outline-none transition-colors"
-          placeholder="Rahul Sharma"
+          placeholder="Full Name"
           required
         />
       </div>
@@ -135,7 +136,7 @@ const SignUp: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           className="w-full px-4 py-3 rounded-lg border border-indigo-700 bg-indigo-800 text-indigo-50
                      focus:ring-brand-primary focus:border-brand-primary outline-none transition-colors"
-          placeholder="rahul@example.com"
+          placeholder="name@example.com"
           required
         />
       </div>

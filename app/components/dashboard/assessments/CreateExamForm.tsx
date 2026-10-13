@@ -196,6 +196,7 @@ export default function CreateExamForm() {
                         type="text"
                         placeholder="write your state / province"
                         value={state.state}
+                        required
                         onChange={(e) => actions.setState(e.target.value)}
                         className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm outline-none 
                           focus:ring-2 focus:ring-indigo-500 transition ${
@@ -216,6 +217,7 @@ export default function CreateExamForm() {
                         type="button"
                         key={exam}
                         onClick={() => actions.setExamName(exam)}
+                        
                         className={`p-3 text-xs font-medium rounded-xl border text-center transition ${
                           state.examName === exam
                             ? 'border-indigo-500 bg-indigo-500/10 text-indigo-500 font-bold'
@@ -232,6 +234,7 @@ export default function CreateExamForm() {
                       type="text"
                       placeholder="Or enter custom exam name..."
                       value={state.examName}
+                      required
                       onChange={(e) => actions.setExamName(e.target.value)}
                       className={`w-full px-4 py-2.5 rounded-xl border text-xs outline-none focus:ring-2
                          focus:ring-indigo-500 transition ${
@@ -265,7 +268,8 @@ export default function CreateExamForm() {
                 </div>
 
               <label className="block text-xs font-medium mb-1.5">
-               Target Subject <span className="text-slate-400 font-normal">(Write Only One) <span className="text-red-500">*</span></span>
+                 Target Subject <span className="text-slate-400 font-normal">(Write Only One) 
+                 <span className="text-red-500">*</span></span>
               </label>
  
               <input type="text" placeholder="Subject to practice e.g Mathematics" 
@@ -285,6 +289,7 @@ export default function CreateExamForm() {
                       type="text"
                       placeholder="e.g computer science"
                       value={state.targetProgram}
+                      required
                       onChange={(e) => actions.setTargetProgram(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
@@ -300,6 +305,7 @@ export default function CreateExamForm() {
                       type="text"
                       placeholder="e.g software developer"
                       value={state.targetCareer}
+                      required
                       onChange={(e) => actions.setTargetCareer(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
@@ -356,6 +362,7 @@ export default function CreateExamForm() {
                       type="text"
                       placeholder="e.g. AWS, Cisco, PMI, CompTIA"
                       value={state.certVendor}
+                      required
                       onChange={(e) => actions.setCertVendor(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
@@ -371,6 +378,7 @@ export default function CreateExamForm() {
                       type="text"
                       placeholder="e.g. Solutions Architect Associate (SAA-C03)"
                       value={state.proExamName}
+                      required
                       onChange={(e) => actions.setProExamName(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
@@ -389,6 +397,7 @@ export default function CreateExamForm() {
                       type="text"
                       placeholder="e.g computer science"
                       value={state.targetProgram}
+                      required
                       onChange={(e) => actions.setTargetProgram(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
@@ -404,6 +413,7 @@ export default function CreateExamForm() {
                       type="text"
                       placeholder="e.g software developer"
                       value={state.targetCareer}
+                      required
                       onChange={(e) => actions.setTargetCareer(e.target.value)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
@@ -482,6 +492,7 @@ export default function CreateExamForm() {
                     type="text"
                     placeholder="e.g. 300+, 1000, 100%"
                     value={state.targetScore}
+                    required
                     onChange={(e) => actions.setTargetScore(e.target.value)}
                     className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                       focus:ring-indigo-500 transition ${

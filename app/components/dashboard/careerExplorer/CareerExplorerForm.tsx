@@ -55,10 +55,33 @@ export default function CareerExplorerForm() {
 
   const handleNext = () => {
     setErrorMessage(null);
-    if (step === 1 && !formData.targetRoleOrField.trim()) {
-      setErrorMessage('Please enter a target career or domain you wish to explore.');
-      return;
+    
+    // --- STEP 1 VALIDATION ---
+    if (step === 1) {
+      if (!formData.targetRoleOrField?.trim()) {
+        setErrorMessage('Please Enter Target Career, Role, or Field of Interest');
+        return;
+      }
+      if (!formData.homeCountry?.trim() || !formData.stateCity?.trim()) {
+        setErrorMessage('Please Enter Country And Your State / City');
+        return;
+      }
     }
+  
+    // --- STEP 2 VALIDATION ---
+    if (step === 2) {
+      if (
+        !formData.currentGradeLevel?.trim() || 
+        !formData.currentSchoolName?.trim() || 
+        !formData.keySubjectsMajor?.trim() || 
+        !formData.estimatedGpaPerformance?.trim()
+      ) {
+        setErrorMessage('Please All Field is Required');
+        return;
+      }
+    }
+
+    // Proceed to next step safely
     setStep((prev) => Math.min(prev + 1, 4));
   };
 
@@ -68,8 +91,19 @@ export default function CareerExplorerForm() {
   };
 
   const handleSubmit = async () => {
+        setErrorMessage(null);
+    
+      if (!formData.personalBackground?.trim() || formData.personalBackground.trim().length < 100) {
+        setErrorMessage('Please Personal Background & Bio is required and must be more than 100 characters');
+        return;
+      }
+      
+      if (!formData.specificQuestions?.trim() || formData.specificQuestions.trim().length < 20) {
+        setErrorMessage('Please Specific Questions is required and must be more than 20 characters');
+        return;
+      }
+
     setIsSubmitting(true);
-    setErrorMessage(null);
 
     // Format payload to strictly match CreateCareerExplorerIntakeInput interface
     const payload: CreateCareerExplorerIntakeInput = {
@@ -100,9 +134,8 @@ export default function CareerExplorerForm() {
       router.push('/dashboard');
     } catch (error: any) {
       console.error('Failed to submit career intake:', error);
-      setErrorMessage(
-        error?.message || 'An error occurred while connecting to the server. Please try again.'
-      );
+      setErrorMessage('An error occurred while exploring your career path. Please try again.');
+      // error?.message || 
     } finally {
       setIsSubmitting(false);
     }

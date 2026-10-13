@@ -19,11 +19,9 @@ export const setTokensAndUserId = (accessToken: string | null, refreshToken: str
 //  export const API_BASE_URL: string =  'http://localhost:8080/api';
 //  export const SOCKET_BASE_URL: string =  'http://localhost:8080';
  
- 
  export const BASE_URL: string =  'https://api.careermapfinder.com/api';
  export const API_BASE_URL: string =  'https://api.careermapfinder.com/api';
  export const SOCKET_BASE_URL: string =  'https://api.careermapfinder.com'; 
-
 
  const api = axios.create({
     baseURL: BASE_URL,
@@ -96,6 +94,15 @@ interface LogoutResponse {
 export const logout = async (): Promise<{ success: boolean; message?: string }> => {
   try {
     const response: AxiosResponse<LogoutResponse> = await axios.post(`${BASE_URL}/account/auth/logout/logout`);
+
+      Cookies.remove('accessToken', { path: '/' });
+      Cookies.remove('refreshToken', { path: '/' });
+      Cookies.remove('userId', { path: '/' });
+      Cookies.remove('isAuthenticated', { path: '/', });
+
+      if (typeof window !== "undefined") {
+           localStorage.clear();
+      }
 
     if (response.status === 200) {
       const responseData = response.data;

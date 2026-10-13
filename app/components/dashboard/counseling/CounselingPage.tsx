@@ -62,7 +62,8 @@ export default function CounselingBookingPage() {
       await counselingApi.create(data);
       setIsSubmitted(true);
     } catch (err: any) {
-      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to submit counseling booking. Please try again.';
+      const errorMessage = 'Failed to submit counseling booking. Please try again.';
+      //err?.response?.data?.message || err?.message || 
       setApiError(errorMessage);
     }
   };

@@ -36,7 +36,7 @@ export function useCreateExamForm() {
 
   // AI & Session Configuration
   const [primaryObjective, setPrimaryObjective] = useState<string>('admission');
-  const [targetScore, setTargetScore] = useState<string>('80');
+  const [targetScore, setTargetScore] = useState<string>('80%');
   const [difficulty, setDifficulty] = useState<DifficultyLevel>('STANDARD');
   const [examDescription, setExamDescription] = useState<string>('');
   const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(60);
@@ -113,7 +113,8 @@ export function useCreateExamForm() {
 
     } catch (err: any) {
       console.error('Error creating exam session:', err);
-      setApiError(err.message || 'Failed to create exam session.');
+      setApiError('Failed to create exam session.');
+      //err.message || 
     } finally {
       setIsSubmitting(false);
     }

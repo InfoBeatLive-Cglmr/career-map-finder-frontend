@@ -63,7 +63,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       setError(response.error || response.message || 'Login failed.');
     }
   } catch (err: any) {
-    setError(err.response?.data?.error || err.message || 'An unexpected error occurred during sign in.');
+    setError('An unexpected error occurred during sign in.');
   } finally {
     setLoading(false);
   }
