@@ -10,18 +10,10 @@ export const allExamSessions: Record<string, ExamSession> = {
   ...updatedProfessionalExamSessions,
 };
 
-// 2. Helper functions to query the consolidated database store
-
-/**
- * Retrieve a single exam session by its session key or unique ID
- */
 export const getExamSessionById = (sessionId: string): ExamSession | null => {
   return allExamSessions[sessionId] || null;
 };
 
-/**
- * List all available exam sessions with summarized metadata
- */
 export const listAllExamCatalogItems = () => {
   return Object.entries(allExamSessions).map(([key, session]) => ({
     id: key,

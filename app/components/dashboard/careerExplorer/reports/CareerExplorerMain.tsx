@@ -99,8 +99,8 @@ export default function CareerExplorerCardPage({ searchQuery = '' }: ComponentPr
     setDownloadingId(id);
    
     try {
-        await pdfApi.downloadDemoPdf(id);
-      //await pdfApi.downloadMainPdf(id);
+        //await pdfApi.downloadDemoPdf(id);
+      await pdfApi.downloadMainPdf(id);
     } catch (err: any) {
       setError(err.message || 'Something went wrong while generating the PDF.');
     } finally {
