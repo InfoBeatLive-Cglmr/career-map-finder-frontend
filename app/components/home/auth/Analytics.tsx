@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-export const GA_MEASUREMENT_ID ="G-F1D82KF4XD";
+export const GA_MEASUREMENT_ID ="G-N3Y6GDFJ4J";
 
 export const pageview = (url: string) => {
   if (typeof window.gtag !== "undefined") {
