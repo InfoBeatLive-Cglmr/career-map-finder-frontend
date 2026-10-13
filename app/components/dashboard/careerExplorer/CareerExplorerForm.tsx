@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../context/ThemeContext';
 
@@ -14,8 +14,9 @@ import { Compass, GraduationCap, Heart, MessageSquare, ArrowRight, ArrowLeft, Sp
 import Cookies from 'js-cookie';
 
 import { careerExplorerApi, CreateCareerExplorerIntakeInput, IntakeWithReportResponse } from '@/app/utils/career-explorer/careerExplorerMain';
-import { syncUpdateResponsesAndInvalidateCache } from '../settings/InvalidateCache';
+import { syncUpdateResponsesAndInvalidateCache, userStorage } from '../settings/InvalidateCache';
 import { useRouter } from 'next/navigation';
+import { UserItem } from '@/app/utils/account/userManagement';
 
 const INITIAL_FORM_DATA: CareerExplorerFormData = {
   userId: Cookies.get('userId') || '',
@@ -47,7 +48,27 @@ export default function CareerExplorerForm() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [apiResponse, setApiResponse] = useState<IntakeWithReportResponse | null>(null);
-   const router = useRouter();
+  const router = useRouter();
+
+   
+  const [userData, setUserData] = useState<UserItem | null>(null);
+  const userId = Cookies.get("userId") as any;
+
+  const planType = userData?.planType;
+  const careerCreation = userData?.careerCreation;
+  const assessmentCreation = userData?.assessmentCreation;
+  const interviewCreation = userData?.interviewCreation;
+  const alertCreation = userData?.alertCreation;
+     
+       useEffect(() => {
+         if (!userId) return;
+     
+         // Access the stored details instantly from localStorage
+         const cachedDetails = userStorage.getUserData(userId);
+         if (cachedDetails) {
+           setUserData(cachedDetails);
+         }
+       }, []);
 
   const updateForm = (fields: Partial<CareerExplorerFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }));

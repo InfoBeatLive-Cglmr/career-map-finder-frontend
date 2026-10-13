@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/app/context/ThemeContext';
 import { AlertFormData } from './types';
@@ -10,6 +10,8 @@ import { AccountabilityRulesStep } from './AccountabilityRulesStep';
 import { Bell, ArrowLeft, Sparkles, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { alertApi, CreateAlertInput } from '@/app/utils/account/alert';
 import Cookies from 'js-cookie';
+import { userStorage } from '../settings/InvalidateCache';
+import { UserItem } from '@/app/utils/account/updateResponse';
 
 const INITIAL_FORM_DATA: AlertFormData = {
   userId: `${Cookies.get('userId')}`,
@@ -51,6 +53,25 @@ export default function AutonomousAlertsPage() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isCreated, setIsCreated] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+     
+  const [userData, setUserData] = useState<UserItem | null>(null);
+
+  const planType = userData?.planType;
+  const careerCreation = userData?.careerCreation;
+  const assessmentCreation = userData?.assessmentCreation;
+  const interviewCreation = userData?.interviewCreation;
+  const alertCreation = userData?.alertCreation;
+     
+       useEffect(() => {
+         if (!userId) return;
+     
+         // Access the stored details instantly from localStorage
+         const cachedDetails = userStorage.getUserData(userId);
+         if (cachedDetails) {
+           setUserData(cachedDetails);
+         }
+       }, []);
 
   const updateForm = (fields: Partial<AlertFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }));
@@ -119,8 +140,7 @@ export default function AutonomousAlertsPage() {
       setIsCreated(true);
     } catch (err: any) {
       console.error('Failed to create alert configuration:', err);
-      setErrorMessage(
-        err?.message || 'Failed to activate the AI alert. Please verify your form inputs and try again.'
+      setErrorMessage('Failed to activate the AI alert. Please verify your form inputs and try again.'
       );
     } finally {
       setIsSubmitting(false);

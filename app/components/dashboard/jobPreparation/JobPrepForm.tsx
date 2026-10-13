@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../context/ThemeContext';
@@ -23,7 +23,8 @@ import {
   interviewSessionApi,
   CreateInterviewSessionInput,
 } from '@/app/utils/job-preparation/interviewSession';
-import { syncUpdateResponsesAndInvalidateCache } from '../settings/InvalidateCache';
+import { syncUpdateResponsesAndInvalidateCache, userStorage } from '../settings/InvalidateCache';
+import { UserItem } from '@/app/utils/account/updateResponse';
 
 const INITIAL_FORM_DATA: CreateInterviewSessionInput = {
   language: 'English',
@@ -56,6 +57,24 @@ export default function JobPrepForm() {
   const [formData, setFormData] = useState<CreateInterviewSessionInput>(INITIAL_FORM_DATA);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [userData, setUserData] = useState<UserItem | null>(null);
+
+  const planType = userData?.planType;
+  const careerCreation = userData?.careerCreation;
+  const assessmentCreation = userData?.assessmentCreation;
+  const interviewCreation = userData?.interviewCreation;
+  const alertCreation = userData?.alertCreation;
+     
+       useEffect(() => {
+         if (!userId) return;
+     
+         // Access the stored details instantly from localStorage
+         const cachedDetails = userStorage.getUserData(userId);
+         if (cachedDetails) {
+           setUserData(cachedDetails);
+         }
+       }, []);
 
   const updateForm = (fields: Partial<CreateInterviewSessionInput>) => {
     setFormData((prev) => ({ ...prev, ...fields }));

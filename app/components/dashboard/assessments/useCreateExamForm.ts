@@ -40,7 +40,7 @@ export function useCreateExamForm() {
   const [difficulty, setDifficulty] = useState<DifficultyLevel>('STANDARD');
   const [examDescription, setExamDescription] = useState<string>('');
   const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(60);
-  const [questionCountOverride, setQuestionCountOverride] = useState<number>(10);
+  const [questionCountOverride, setQuestionCountOverride] = useState<number>(30);
 
   // Status and Errors
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -100,7 +100,7 @@ export function useCreateExamForm() {
       difficulty,
       targetScore: Number(targetScore) || 80,
       timeLimitMinutes: Number(timeLimitMinutes) || 60,
-      questionCountOverride: Number(questionCountOverride) || 10,
+      questionCountOverride: Number(questionCountOverride) || 30,
     };
 
     try {

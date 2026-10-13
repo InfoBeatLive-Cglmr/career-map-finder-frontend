@@ -20,6 +20,12 @@ export interface UserItem {
   billingCycle?: string;
   nextBillingDate:string;
   lastPaymentDate:string;
+  
+  careerCreation: number;
+  assessmentCreation: number;
+  interviewCreation: number;
+  alertCreation: number;
+
   isAdmin?: boolean;
   isActive?: boolean;
   isBlocked?: boolean;
