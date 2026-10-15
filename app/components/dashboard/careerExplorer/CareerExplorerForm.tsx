@@ -26,7 +26,7 @@ const INITIAL_FORM_DATA: CareerExplorerFormData = {
   academicStream: 'PHYSICAL_NATURAL_SCIENCES',
   homeCountry: '',
   stateCity: '',
-  targetStudyCountry: '🌐',
+  targetStudyCountry: 'international',
   currentGradeLevel: '',
   currentSchoolName: '',
   keySubjectsMajor: '',

@@ -13,16 +13,15 @@ interface Props {
 
 export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, isDark }) => {
 
-  const toggleTargetCountry = (countryId: string) => {
+const toggleTargetCountry = (countryId: string) => {
   const current = formData.targetStudyCountry;
 
-  // if clicking same again → unselect (optional)
+  // Toggle selection on or off
   if (current === countryId) {
     updateForm({ targetStudyCountry: '' });
   } else {
     updateForm({ targetStudyCountry: countryId });
   }
-  
 };
 
   return (
@@ -224,7 +223,8 @@ export const ProfileAndTargetStep: React.FC<Props> = ({ formData, updateForm, is
         <div className={`flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2.5 rounded-xl 
         border ${ isDark ? 'border-slate-700' : 'border-slate-300'}`}>
           {COUNTRIES.slice(0, 200).map((c) => {
-            const isSelected = formData.targetStudyCountry.includes(c.id);
+            //const isSelected = formData.targetStudyCountry.includes(c.id);
+            const isSelected = formData.targetStudyCountry === c.id;
             return (
               <button
                 key={c.id}

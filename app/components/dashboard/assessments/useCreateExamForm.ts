@@ -14,7 +14,7 @@ export function useCreateExamForm() {
   const userId =  Cookies.get('userId');
   const [language, setLanguage] = useState<string>('English');
   const [category, setCategory] = useState<ExamCategory>('ACADEMIC');
-  const [country, setCountry] = useState<string>('in');
+  const [country, setCountry] = useState<string>('international');
   const [state, setState] = useState<string>('');
 
   // Academic Form States

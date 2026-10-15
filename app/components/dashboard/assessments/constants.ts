@@ -1,7 +1,7 @@
 import { CountryOption, ProfessionalDomain } from './types';
 
 export const COUNTRIES: CountryOption[] = [
-  { id: '🌐', name: 'International / Global', flag: '🌐' },
+  { id: 'international', name: 'International / Global', flag: '🌐' },
   { id: 'af', name: 'Afghanistan', flag: '🇦🇫' },
   { id: 'al', name: 'Albania', flag: '🇦🇱' },
   { id: 'dz', name: 'Algeria', flag: '🇩🇿' },

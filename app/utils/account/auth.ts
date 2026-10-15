@@ -95,34 +95,25 @@ export const logout = async (): Promise<{ success: boolean; message?: string }> 
   try {
     const response: AxiosResponse<LogoutResponse> = await axios.post(`${BASE_URL}/account/auth/logout/logout`);
 
-      Cookies.remove('accessToken', { path: '/' });
-      Cookies.remove('refreshToken', { path: '/' });
-      Cookies.remove('userId', { path: '/' });
-      Cookies.remove('isAuthenticated', { path: '/', });
-
-      if (typeof window !== "undefined") {
-           localStorage.clear();
-      }
-
     if (response.status === 200) {
       const responseData = response.data;
-
-      Cookies.remove('accessToken', { path: '/' });
-      Cookies.remove('refreshToken', { path: '/' });
-      Cookies.remove('userId', { path: '/' });
-      Cookies.remove('isAuthenticated', { path: '/', });
-
-      if (typeof window !== "undefined") {
-           localStorage.clear();
-      }
-
       return { success: true, message: responseData.message };
     } else {
       console.error('Error during logout:', response.data.error);
       throw new Error(response.data.error || 'Failed to logout');
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.error('Error during logout:', error.message);
     throw new Error('Failed to logout');
+  } finally {
+    // THIS ALWAYS RUNS: Clears client session regardless of API success or failure
+    Cookies.remove('accessToken', { path: '/' });
+    Cookies.remove('refreshToken', { path: '/' });
+    Cookies.remove('userId', { path: '/' });
+    Cookies.remove('isAuthenticated', { path: '/' });
+
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+    }
   }
 };

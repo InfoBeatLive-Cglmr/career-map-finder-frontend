@@ -32,7 +32,7 @@ const INITIAL_FORM_DATA: CreateInterviewSessionInput = {
   industryDomain: '',
   careerStage: 'STUDENT_INTERN',
   workArrangement: ['ON_SITE'],
-  targetCountries: ['🌐'],
+  targetCountries: ['international'],
   isExperienced: false,
   highestDegree: '',
   institution: '',
