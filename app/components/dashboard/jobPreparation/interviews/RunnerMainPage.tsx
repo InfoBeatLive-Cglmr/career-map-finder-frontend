@@ -417,7 +417,7 @@ const handleFinalSubmit = async () => {
     ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
       
       {/* Sticky Header */}
-      <header className={`z-30 px-6 py-4 border-b backdrop-blur-md sticky top-0 
+      <header className={`z-30 px-6 py-4 border rounded-xl backdrop-blur-md sticky top-0 
         ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 max-md:hidden">
@@ -462,7 +462,7 @@ const handleFinalSubmit = async () => {
       </header>
 
       {/* Main Runner Body */}
-      <main className="max-w-7xl mx-auto pt-6 px-4 pb-12 grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <main className="max-w-7xl mx-auto pt-6 px- pb-12 grid grid-cols-1 xl:grid-cols-12 gap-6">
         
         {/* Left Column: Question & Input Panel */}
         <section className="xl:col-span-8 space-y-6">

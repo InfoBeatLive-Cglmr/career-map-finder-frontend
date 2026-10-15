@@ -231,7 +231,7 @@ export default function InterviewReportPage() {
         isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
       }`}
     >
-      <div className="max-w-7xl mx-auto space-y-6 print:p-0 print:m-0 print:max-w-none p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6 print:p-0 print:m-0 print:max-w-none">
         
         {/* Navigation & Action Header */}
         <div className="flex flex-col sm:flex-row max-sm:hidden items-start sm:items-center justify-between gap-4 print:hidden">
@@ -330,13 +330,13 @@ export default function InterviewReportPage() {
 
           {/* Radar Performance Scorecard Grid */}
           {report && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 mb-6">
               {[
-                { label: 'Technical Mastery', score: report.technicalProficiency ?? 0, icon: Zap },
-                { label: 'Communication', score: report.communicationClarity ?? 0, icon: Activity },
-                { label: 'Problem Solving', score: report.problemSolvingLogic ?? 0, icon: Target },
-                { label: 'Culture & Leadership', score: report.cultureAndLeadership ?? 0, icon: Briefcase },
-                { label: 'Domain Knowledge', score: report.domainKnowledge ?? 0, icon: Layers },
+                { label: 'Technical Mastery', score: report.radarMetrics.technicalProficiency ?? 0, icon: Zap },
+                { label: 'Communication', score: report.radarMetrics.communicationClarity ?? 0, icon: Activity },
+                { label: 'Problem Solving', score: report.radarMetrics.problemSolvingLogic ?? 0, icon: Target },
+                { label: 'Culture & Leadership', score: report.radarMetrics.cultureAndLeadership ?? 0, icon: Briefcase },
+                { label: 'Domain Knowledge', score: report.radarMetrics.domainKnowledge ?? 0, icon: Layers },
               ].map((metric, idx) => (
                 <div
                   key={idx}

@@ -160,7 +160,7 @@ export default function ExamReportPage() {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 p-4 sm:p-6 lg:p-8 ${
+      className={`min-h-screen transition-colors duration-300 ${
         isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
       }`}
     >

@@ -14,13 +14,13 @@ export type HireRecommendation =
 
 export type CategoryStatus = "EXCELLENT" | "GOOD" | "NEEDS_WORK";
 
-// export interface RadarMetrics {
-//   technicalProficiency: number;
-//   communicationClarity: number;
-//   problemSolvingLogic: number;
-//   cultureAndLeadership: number;
-//   domainKnowledge: number;
-// }
+export interface RadarMetrics {
+  technicalProficiency: number;
+  communicationClarity: number;
+  problemSolvingLogic: number;
+  cultureAndLeadership: number;
+  domainKnowledge: number;
+}
 
 export interface CategoryBreakdownItem {
   category: string;
@@ -36,7 +36,7 @@ export interface FormattedInterviewEvaluationReport {
   overallScore: number;
   hireRecommendation: HireRecommendation;
   executiveSummary: string;
-  //radarMetrics: RadarMetrics;
+  radarMetrics: RadarMetrics;
   technicalProficiency: number;
   communicationClarity: number;
   problemSolvingLogic: number;
