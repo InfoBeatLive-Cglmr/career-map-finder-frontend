@@ -48,7 +48,7 @@ const NAV_ITEMS: NavItem[] = [
     rel:"",
   },
   {
-    title: 'Career Explorer',
+    title: 'Add New Career',
     href: '/dashboard/career-explorer',
     icon: GitCompare,
     badge: '',
@@ -56,7 +56,7 @@ const NAV_ITEMS: NavItem[] = [
     rel:"",
   },
   {
-    title: 'Exams & Tests',
+    title: 'Add New Exam',
     href: '/dashboard/assessments',
     icon: GraduationCap,
     badge: '',
@@ -64,7 +64,7 @@ const NAV_ITEMS: NavItem[] = [
     rel:"",
   },
   {
-    title: 'Interview Practice',
+    title: 'Add New Interview',
     href: '/dashboard/job-preparation',
     icon: BriefcaseBusiness,
     badge: '',
