@@ -37,17 +37,20 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
 
   const handleLogout = async () => {
     try {
-      // 1. Call your logout function (which clears cookies and local storage)
+
       const result = await logout();
 
       if (result.success) {
-        // 2. Redirect the user to the login or home page
+
+      if (typeof window !== "undefined") {
+        window.location.reload()
+        router.refresh();
         router.push("/auth/signin");
-        router.refresh(); // Optional: refreshes server components / router cache
+      }
+       
       }
     } catch (err) {
       console.error("Logout failed:", err);
-      // Optional: Show an error notification to the user here
     }
   };
 

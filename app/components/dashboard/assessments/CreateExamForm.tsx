@@ -474,20 +474,24 @@ export default function CreateExamForm() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium mb-1.5">Provide the time limit of this exam (minuets) <span className="text-red-500">*</span></label>
-                    <input
-                      type="number"
-                      placeholder="e.g 60"
-                      value={state.timeLimitMinutes}
-                      required
-                      onChange={(e) => actions.setTimeLimitMinutes(e.target.value as any)}
-                      className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
-                        focus:ring-indigo-500 transition ${
-                        isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
-                        : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
-                      }`}
-                    />
+                    <label className="block text-xs font-medium mb-1.5">
+                       Provide the time limit of this exam (minuets)  <span className="text-red-500">*</span>
+                    </label>
+                   
+                    <input type="number" placeholder="e.g 60" value={state.timeLimitMinutes}  required
+                    min={1} max={300} onChange={(e) => { const val = e.target.value;
+                    if (val === "") {  actions.setTimeLimitMinutes(10); return }
+                    const num = Number(val); 
+                    
+                    if (num > 300) {actions.setTimeLimitMinutes(300 as any);
+                      } else if (num < 1) { actions.setTimeLimitMinutes(10 as any);
+                    } else {actions.setTimeLimitMinutes(num as any);  }}}
+                    className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
+                     focus:ring-indigo-500 transition ${
+                     isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
+                     : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'}`}/>
                   </div>
+
                 </div>
 
           <hr className={`my-8 ${isDark ? 'border-slate-700' : 'border-slate-300'}`} />
