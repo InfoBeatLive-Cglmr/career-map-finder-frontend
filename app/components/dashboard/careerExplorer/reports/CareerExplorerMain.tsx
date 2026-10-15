@@ -286,7 +286,7 @@ export default function CareerExplorerCardPage({ searchQuery = '' }: ComponentPr
                     <div className="flex justify-between items-center text-xs font-medium pt-1 border-t border-inherit/40">
                       <span className="flex items-center gap-1.5">
                         <TrendingUp className="w-3.5 h-3.5" />
-                        Global Abroad
+                        Global🌐
                       </span>
                       <span className="line-clamp-1">
                         {item.topCountriesAbroad?.slice(0, 2).join(', ')}

@@ -11,6 +11,7 @@ import {
   Copy,
   Check
 } from 'lucide-react';
+import Editor from '@monaco-editor/react';
 
 interface VisualLayoutRendererProps {
   visualLayout: VisualLayoutType;
@@ -91,18 +92,15 @@ const highlightCode = (code: string): string => {
 
 {visualLayout === 'CODE_EDITOR' && (
   <div className="rounded-2xl overflow-hidden border border-slate-800 bg-[#1e1e1e] text-slate-100 shadow-2xl font-mono text-xs">
-    {/* Editor Header Bar (VS Code Dark Titlebar) */}
+    {/* Editor Header Bar */}
     <div className="flex items-center justify-between px-4 py-2.5 bg-[#252526] border-b border-[#333333] text-xs text-slate-400">
       <div className="flex items-center gap-3">
-        {/* VS Code Window Control Dots */}
         <div className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-full bg-[#ff5f56] inline-block" />
           <span className="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block" />
           <span className="w-3 h-3 rounded-full bg-[#27c93f] inline-block" />
         </div>
-
         <span className="flex items-center gap-2 pl-2 border-l border-[#3c3c3c]">
-          <Terminal className="w-4 h-4 text-sky-400" />
           <span className="font-semibold uppercase tracking-wider text-sky-400">
             {codeLanguage}
           </span>{' '}
@@ -110,67 +108,39 @@ const highlightCode = (code: string): string => {
         </span>
       </div>
 
-      <div className="flex items-center gap-2">
-        <button
-          onClick={handleCopySnippet}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#333333] hover:bg-[#444444] text-slate-200 transition-all cursor-pointer font-sans text-xs font-medium"
-        >
-          {copied ? (
-            <Check className="w-3.5 h-3.5 text-emerald-400" />
-          ) : (
-            <Copy className="w-3.5 h-3.5 text-slate-400" />
-          )}
-          <span>{copied ? 'Copied' : 'Copy Snippet'}</span>
-        </button>
-      </div>
+      <button
+        onClick={handleCopySnippet}
+        className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#333333] hover:bg-[#444444] text-slate-200 transition-all cursor-pointer font-sans text-xs font-medium"
+      >
+        <span>{copied ? 'Copied' : 'Copy Snippet'}</span>
+      </button>
     </div>
 
-    {/* Code Editor Body with Line Numbers & Token Highlight Overlay */}
-    <div className="relative flex min-h-[320px] max-h-[500px] overflow-auto bg-[#1e1e1e]">
-      {/* Line Numbers Gutter */}
-      <div className="shrink-0 py-4 px-3 bg-[#1e1e1e] text-[#5a5a5a] text-right font-mono text-xs select-none border-r border-[#2d2d2d] min-w-[42px]">
-        {((submittedCode || codeStarterSnippet || '// Write your solution here...').split('\n')).map((_, i) => (
-          <div key={i} className="leading-6">
-            {i + 1}
-          </div>
-        ))}
-      </div>
-
-      {/* Editor Main Canvas */}
-      <div className="relative flex-1 p-4 overflow-hidden">
-        {/* Syntax Highlighted Render Layer */}
-        <pre
-          aria-hidden="true"
-          className="m-0 font-mono text-xs leading-6 whitespace-pre-wrap break-words pointer-events-none select-none text-[#d4d4d4]"
-          dangerouslySetInnerHTML={{
-            __html: highlightCode(
-              submittedCode || codeStarterSnippet || '// Write your solution here...'
-            ),
-          }}
-        />
-
-        {/* Transparent Interactive Textarea Overlay */}
-        <textarea
-          rows={14}
-          value={submittedCode || codeStarterSnippet}
-          onChange={(e) => onCodeChange(e.target.value)}
-          placeholder="// Write your solution here..."
-          className="absolute inset-0 w-full h-full p-4 bg-transparent font-mono text-xs leading-6 text-transparent caret-indigo-400 resize-none focus:outline-none spellcheck-false border-none whitespace-pre-wrap break-words"
-          spellCheck={false}
-        />
-      </div>
+    {/* Real Monaco Code Editor */}
+    <div className="min-h-[320px] max-h-[500px]">
+      <Editor
+        height="350px`"
+        language={codeLanguage.toLowerCase()}
+        theme="vs-dark"
+        value={submittedCode || codeStarterSnippet || '// Write your solution here...'}
+        onChange={(value) => onCodeChange(value || '')}
+        options={{
+          minimap: { enabled: false },
+          fontSize: 12,
+          scrollBeyondLastLine: false,
+          automaticLayout: true,
+        }}
+      />
     </div>
 
     {/* VS Code Footer Status Bar */}
-    <div className="flex items-center justify-between border-t px-4 py-1 text-white text-[11px] font-sans font-medium">
-      <div className="flex items-center gap-3">
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" /> Ready
-        </span>
+    <div className="flex items-center justify-between border-t 
+      border-[#333333] px-4 py-1 text-slate-400 text-[11px] font-sans font-medium bg-[#007acc]">
+      <div className="flex items-center gap-3 text-white">
+        <span>Ready</span>
         <span>UTF-8</span>
       </div>
-      <div className="flex items-center gap-4">
-        <span>Ln {((submittedCode || codeStarterSnippet || '').split('\n')).length}, Col 1</span>
+      <div className="flex items-center gap-4 text-white">
         <span className="uppercase">{codeLanguage}</span>
       </div>
     </div>
@@ -348,3 +318,94 @@ const highlightCode = (code: string): string => {
     </div>
   );
 };
+
+
+
+
+// {visualLayout === 'CODE_EDITOR' && (
+//   <div className="rounded-2xl overflow-hidden border border-slate-800 bg-[#1e1e1e] text-slate-100 shadow-2xl font-mono text-xs">
+//      Editor Header Bar (VS Code Dark Titlebar) 
+//     <div className="flex items-center justify-between px-4 py-2.5 bg-[#252526] border-b border-[#333333] text-xs text-slate-400">
+//       <div className="flex items-center gap-3">
+//         {/* VS Code Window Control Dots */}
+//         <div className="flex items-center gap-1.5">
+//           <span className="w-3 h-3 rounded-full bg-[#ff5f56] inline-block" />
+//           <span className="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block" />
+//           <span className="w-3 h-3 rounded-full bg-[#27c93f] inline-block" />
+//         </div>
+
+//         <span className="flex items-center gap-2 pl-2 border-l border-[#3c3c3c]">
+//           <Terminal className="w-4 h-4 text-sky-400" />
+//           <span className="font-semibold uppercase tracking-wider text-sky-400">
+//             {codeLanguage}
+//           </span>{' '}
+//           IDE Environment
+//         </span>
+//       </div>
+
+//       <div className="flex items-center gap-2">
+//         <button
+//           onClick={handleCopySnippet}
+//           className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#333333] hover:bg-[#444444] text-slate-200 transition-all cursor-pointer font-sans text-xs font-medium"
+//         >
+//           {copied ? (
+//             <Check className="w-3.5 h-3.5 text-emerald-400" />
+//           ) : (
+//             <Copy className="w-3.5 h-3.5 text-slate-400" />
+//           )}
+//           <span>{copied ? 'Copied' : 'Copy Snippet'}</span>
+//         </button>
+//       </div>
+//     </div>
+
+//     {/* Code Editor Body with Line Numbers & Token Highlight Overlay */}
+//     <div className="relative flex min-h-[320px] max-h-[500px] overflow-auto bg-[#1e1e1e]">
+//       {/* Line Numbers Gutter */}
+//       <div className="shrink-0 py-4 px-3 bg-[#1e1e1e] text-[#5a5a5a] text-right font-mono text-xs select-none border-r border-[#2d2d2d] min-w-[42px]">
+//         {((submittedCode || codeStarterSnippet || '// Write your solution here...').split('\n')).map((_, i) => (
+//           <div key={i} className="leading-6">
+//             {i + 1}
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* Editor Main Canvas */}
+//       <div className="relative flex-1 p-4 overflow-hidden">
+//         {/* Syntax Highlighted Render Layer */}
+//         <pre
+//           aria-hidden="true"
+//           className="m-0 font-mono text-xs leading-6 whitespace-pre-wrap break-words pointer-events-none select-none text-[#d4d4d4]"
+//           dangerouslySetInnerHTML={{
+//             __html: highlightCode(
+//               submittedCode || codeStarterSnippet || '// Write your solution here...'
+//             ),
+//           }}
+//         />
+
+//         {/* Transparent Interactive Textarea Overlay */}
+//         <textarea
+//           rows={14}
+//           value={submittedCode || codeStarterSnippet}
+//           onChange={(e) => onCodeChange(e.target.value)}
+//           placeholder="// Write your solution here..."
+//           className="absolute inset-0 w-full h-full p-4 bg-transparent font-mono text-xs leading-6 text-transparent caret-indigo-400 resize-none focus:outline-none spellcheck-false border-none whitespace-pre-wrap break-words"
+//           spellCheck={false}
+//         />
+//       </div>
+//     </div>
+
+//     {/* VS Code Footer Status Bar */}
+//     <div className="flex items-center justify-between border-t px-4 py-1 text-white text-[11px] font-sans font-medium">
+//       <div className="flex items-center gap-3">
+//         <span className="flex items-center gap-1">
+//           <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" /> Ready
+//         </span>
+//         <span>UTF-8</span>
+//       </div>
+//       <div className="flex items-center gap-4">
+//         <span>Ln {((submittedCode || codeStarterSnippet || '').split('\n')).length}, Col 1</span>
+//         <span className="uppercase">{codeLanguage}</span>
+//       </div>
+//     </div>
+//   </div>
+// )}
