@@ -53,16 +53,16 @@ export default function InterviewReportPage() {
 
     try {
       // ✅ Cache first
-      if (typeof window !== 'undefined') {
-        const cached = localStorage.getItem(storageKey);
-        if (cached) {
-          if (isMounted) {
-            setReport(JSON.parse(cached));
-            setLoading(false);
-          }
-          return;
-        }
-      }
+      // if (typeof window !== 'undefined') {
+      //   const cached = localStorage.getItem(storageKey);
+      //   if (cached) {
+      //     if (isMounted) {
+      //       setReport(JSON.parse(cached));
+      //       setLoading(false);
+      //     }
+      //     return;
+      //   }
+      // }
 
       // ❌ Fetch API
       const response =

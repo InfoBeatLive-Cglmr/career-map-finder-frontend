@@ -35,24 +35,36 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
         
       }, []);
 
-  const handleLogout = async () => {
-    try {
+const handleLogout = async () => {
+  try {
+    
+    await logout();
 
-      const result = await logout();
+    const tokenStillExists = Cookies.get('accessToken');
+    const hasLocalData = typeof window !== "undefined" && localStorage.length > 0;
 
-      if (result.success) {
-
+    if (!tokenStillExists && !hasLocalData) {
+      // Safe to route now!
+      router.refresh();
+      router.push("/auth/signin");
+    } else {
+      console.warn("Storage persistence detected, forcing second flush...");
+      
+      // Force second clean pass just in case
       if (typeof window !== "undefined") {
-        window.location.reload()
-        router.refresh();
-        router.push("/auth/signin");
+        localStorage.clear();
+        sessionStorage.clear();
       }
-       
-      }
-    } catch (err) {
-      console.error("Logout failed:", err);
+      Cookies.remove('accessToken', { path: '/' });
+      
+      // Now force navigate
+      router.refresh();
+      router.push("/auth/signin");
     }
-  };
+  } catch (err) {
+    console.error("Logout failed:", err);
+  }
+};
 
       // useEffect(() => {
       //      syncUpdateResponsesAndInvalidateCache();

@@ -93,20 +93,21 @@ interface LogoutResponse {
 
 export const logout = async (): Promise<{ success: boolean; message?: string }> => {
   try {
+    // 1. Try hitting the backend API logout endpoint
     const response: AxiosResponse<LogoutResponse> = await axios.post(`${BASE_URL}/account/auth/logout/logout`);
 
     if (response.status === 200) {
-      const responseData = response.data;
-      return { success: true, message: responseData.message };
+      return { success: true, message: response.data.message };
     } else {
       console.error('Error during logout:', response.data.error);
       throw new Error(response.data.error || 'Failed to logout');
     }
   } catch (error: any) {
-    console.error('Error during logout:', error.message);
-    throw new Error('Failed to logout');
+    console.error('Error during logout (API failed, continuing client cleanup):', error.message);
+    // Even if the backend fails, we still want local cleanup to succeed
+    return { success: true, message: 'Logged out locally' };
   } finally {
-    // THIS ALWAYS RUNS: Clears client session regardless of API success or failure
+    // 2. Perform aggressive client-side cleanup
     Cookies.remove('accessToken', { path: '/' });
     Cookies.remove('refreshToken', { path: '/' });
     Cookies.remove('userId', { path: '/' });
@@ -114,6 +115,7 @@ export const logout = async (): Promise<{ success: boolean; message?: string }> 
 
     if (typeof window !== "undefined") {
       localStorage.clear();
+      sessionStorage.clear();
     }
   }
 };

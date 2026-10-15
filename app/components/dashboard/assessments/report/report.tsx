@@ -45,15 +45,15 @@ export default function ExamReportPage() {
       setError(null);
 
       // ✅ Check cache
-      if (typeof window !== 'undefined') {
-        const cached = localStorage.getItem(storageKey);
+      // if (typeof window !== 'undefined') {
+      //   const cached = localStorage.getItem(storageKey);
 
-        if (cached) {
-          setReport(JSON.parse(cached));
-          setLoading(false);
-          return;
-        }
-      }
+      //   if (cached) {
+      //     setReport(JSON.parse(cached));
+      //     setLoading(false);
+      //     return;
+      //   }
+      // }
 
       // ❌ Fetch API
       const response = await evaluationReportApi.getReportBySessionId(sessionId);
