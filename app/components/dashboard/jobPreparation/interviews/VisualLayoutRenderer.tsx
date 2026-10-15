@@ -89,11 +89,13 @@ const highlightCode = (code: string): string => {
       <div className={`prose max-w-none text-base leading-relaxed ${isDark ? 'prose-invert text-slate-100' : 'text-slate-900'}`}>
         <p className="whitespace-pre-line font-medium text-sm max-sm:text-xs leading-snug">{prompt}</p>
       </div>
-
+{/* 
 {visualLayout === 'CODE_EDITOR' && (
-  <div className="rounded-2xl overflow-hidden border border-slate-800 bg-[#1e1e1e] text-slate-100 shadow-2xl font-mono text-xs">
-    {/* Editor Header Bar */}
-    <div className="flex items-center justify-between px-4 py-2.5 bg-[#252526] border-b border-[#333333] text-xs text-slate-400">
+  <div className="rounded-2xl overflow-hidden border border-slate-800 bg-[#1e1e1e] 
+  text-slate-100 shadow-2xl font-mono text-xs">
+   
+    <div className="flex items-center justify-between px-4 py-2.5 bg-[#252526] border-b 
+    border-[#333333] text-xs text-slate-400">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-full bg-[#ff5f56] inline-block" />
@@ -110,13 +112,13 @@ const highlightCode = (code: string): string => {
 
       <button
         onClick={handleCopySnippet}
-        className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#333333] hover:bg-[#444444] text-slate-200 transition-all cursor-pointer font-sans text-xs font-medium"
+        className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#333333] 
+        hover:bg-[#444444] text-slate-200 transition-all cursor-pointer font-sans text-xs font-medium"
       >
         <span>{copied ? 'Copied' : 'Copy Snippet'}</span>
       </button>
     </div>
 
-    {/* Real Monaco Code Editor */}
     <div className="min-h-[320px] max-h-[500px]">
       <Editor
         height="350px`"
@@ -133,9 +135,68 @@ const highlightCode = (code: string): string => {
       />
     </div>
 
-    {/* VS Code Footer Status Bar */}
     <div className="flex items-center justify-between border-t 
       border-[#333333] px-4 py-1 text-slate-400 text-[11px] font-sans font-medium bg-[#007acc]">
+      <div className="flex items-center gap-3 text-white">
+        <span>Ready</span>
+        <span>UTF-8</span>
+      </div>
+      <div className="flex items-center gap-4 text-white">
+        <span className="uppercase">{codeLanguage}</span>
+      </div>
+    </div>
+  </div>
+)} */}
+
+{visualLayout === 'CODE_EDITOR' && (
+  <div className="rounded-2xl overflow-hidden border border-slate-800 bg-[#1e1e1e]
+   text-slate-100 shadow-2xl font-mono text-xs">
+    {/* Editor Header Bar */}
+    <div className="flex items-center justify-between px-4 py-2.5 bg-[#252526] border-b 
+     border-[#333333] text-xs text-slate-400">
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded-full bg-[#ff5f56] inline-block" />
+          <span className="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block" />
+          <span className="w-3 h-3 rounded-full bg-[#27c93f] inline-block" />
+        </div>
+        <span className="flex items-center gap-2 pl-2 border-l border-[#3c3c3c]">
+          <span className="font-semibold uppercase tracking-wider text-sky-400">
+            {codeLanguage}
+          </span>{' '}
+          IDE Environment
+        </span>
+      </div>
+
+      <button
+        onClick={handleCopySnippet}
+        className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#333333] 
+        hover:bg-[#444444] text-slate-200 transition-all cursor-pointer font-sans text-xs font-medium"
+      >
+        <span>{copied ? 'Copied' : 'Copy Snippet'}</span>
+      </button>
+    </div>
+
+    {/* Real Monaco Code Editor with Fixed Height */}
+    <div className="w-full h-[350px] relative">
+      <Editor
+        height="100%"
+        language={codeLanguage.toLowerCase()}
+        theme="vs-dark"
+        value={submittedCode || codeStarterSnippet || '// Write your solution here...'}
+        onChange={(value) => onCodeChange(value || '')}
+        options={{
+          minimap: { enabled: false },
+          fontSize: 12,
+          scrollBeyondLastLine: false,
+          automaticLayout: true,
+        }}
+      />
+    </div>
+
+    {/* VS Code Footer Status Bar */}
+    <div className="flex items-center justify-between border-t 
+    border-[#333333] px-4 py-1 text-slate-400 text-[11px] font-sans font-medium bg-[#007acc]">
       <div className="flex items-center gap-3 text-white">
         <span>Ready</span>
         <span>UTF-8</span>
