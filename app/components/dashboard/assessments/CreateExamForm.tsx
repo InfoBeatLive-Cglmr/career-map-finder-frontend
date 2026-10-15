@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, ArrowRight, Award, BrainCircuit, CheckCircle2, ChevronRight, Globe, GraduationCap, Layers, Loader2, MapPin, Target } from 'lucide-react';
+import { AlertCircle, ArrowRight, Award, BrainCircuit, CheckCircle2, ChevronRight, Globe, GraduationCap, Layers, Loader2, MapPin, Sparkles, Target } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 import { useCreateExamForm } from './useCreateExamForm';
 import { COUNTRIES, ACADEMIC_EXAMS_BY_COUNTRY, PROFESSIONAL_DOMAINS } from './constants';
@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { userStorage } from '../settings/InvalidateCache';
 import Cookies from 'js-cookie';
 import { UserItem } from '@/app/utils/account/userManagement';
+import { canCreateSession } from '../settings/PlanManagement';
 
 export default function CreateExamForm() {
   const { theme } = useTheme();
@@ -24,10 +25,12 @@ export default function CreateExamForm() {
   const userId = Cookies.get("userId") as any;
 
   const planType = userData?.planType;
-  const careerCreation = userData?.careerCreation;
+  //const careerCreation = userData?.careerCreation;
   const assessmentCreation = userData?.assessmentCreation;
-  const interviewCreation = userData?.interviewCreation;
-  const alertCreation = userData?.alertCreation;
+  //const interviewCreation = userData?.interviewCreation;
+  //const alertCreation = userData?.alertCreation;
+  
+  const isAllowed = canCreateSession(planType, assessmentCreation);
   
     useEffect(() => {
       if (!userId) return;
@@ -45,8 +48,7 @@ export default function CreateExamForm() {
 
     try {
       await actions.handleSubmit(e, async (payload) => {
-        
-        router.push('/dashboard');
+        //router.push('/dashboard');
       });
     } catch (error) {
       console.error('Failed to submit exam configuration:', error);
@@ -653,7 +655,7 @@ export default function CreateExamForm() {
           {/* Submit */}
           <div className="mt-2 pt-4">
 
-            { planType === 'Basic' && careerCreation === 1 ?
+            {isAllowed ?
             (<button type="submit" disabled={state.isSubmitting}
               className="w-full py-4 px-6 rounded-xl font-bold text-white bg-indigo-600 
               hover:bg-indigo-500 active:scale-[0.99] transition shadow-lg shadow-indigo-500/25 
@@ -665,16 +667,16 @@ export default function CreateExamForm() {
                 <> Create Practice Exam <ArrowRight className="w-5 h-5" /></>
               )}
             </button>):
-            (<button type="submit" disabled={state.isSubmitting}
-              className="w-full py-4 px-6 rounded-xl font-bold text-white bg-indigo-600 
-              hover:bg-indigo-500 active:scale-[0.99] transition shadow-lg shadow-indigo-500/25 
-              flex items-center justify-center gap-2 text-base disabled:opacity-50">
-              {state.isSubmitting ? (
-                <> <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                 Creating Your Exam...</>
-              ) : (
-                <> Create Practice Exam <ArrowRight className="w-5 h-5" /></>
-              )}
+            (<button
+                type="button"
+                className="w-full flex justify-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
+                hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
+                items-center gap-2 shadow-lg shadow-indigo-500/25 opacity-100">
+              {isSubmitting ? ( <span>Analyzing...</span> ) : (
+                <a href="/dashboard/pricing" target=""  rel="">
+                <span className='flex flex-row gap-2'>
+                <Sparkles className="w-4 h-4 mt-0.5" />Upgrade Your Plan
+                </span></a> )}
             </button>)}
 
 

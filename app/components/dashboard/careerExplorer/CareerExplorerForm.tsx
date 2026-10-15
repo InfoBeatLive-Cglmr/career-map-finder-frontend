@@ -17,6 +17,7 @@ import { careerExplorerApi, CreateCareerExplorerIntakeInput, IntakeWithReportRes
 import { syncUpdateResponsesAndInvalidateCache, userStorage } from '../settings/InvalidateCache';
 import { useRouter } from 'next/navigation';
 import { UserItem } from '@/app/utils/account/userManagement';
+import { canCreateSession } from '../settings/PlanManagement';
 
 const INITIAL_FORM_DATA: CareerExplorerFormData = {
   userId: Cookies.get('userId') || '',
@@ -43,22 +44,46 @@ export default function CareerExplorerForm() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  const [step, setStep] = useState<number>(1);
-  const [formData, setFormData] = useState<CareerExplorerFormData>(INITIAL_FORM_DATA);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [apiResponse, setApiResponse] = useState<IntakeWithReportResponse | null>(null);
   const router = useRouter();
 
+  const userIdCookie = Cookies.get('userId');
+  const STORAGE_KEY = `career_explorer_draft_${userIdCookie}`;
+  const STEP_STORAGE_KEY = `career_explorer_step_${userIdCookie}`;
+
+  
+  const [step, setStep] = useState<number>(() => {
+  if (typeof window === 'undefined') return 1;
+  const savedStep = localStorage.getItem(STEP_STORAGE_KEY);
+  return savedStep ? parseInt(savedStep, 10) : 1;
+  });
+
+  
+  const [formData, setFormData] = useState<CareerExplorerFormData>(() => {
+  if (typeof window === 'undefined') return INITIAL_FORM_DATA;
+  const savedData = localStorage.getItem(STORAGE_KEY);
+  if (savedData) {
+    try {
+      return JSON.parse(savedData);
+    } catch (e) {
+      console.error('Failed to parse cached form data', e);
+    }
+  }
+  return INITIAL_FORM_DATA;
+  });
    
   const [userData, setUserData] = useState<UserItem | null>(null);
   const userId = Cookies.get("userId") as any;
 
   const planType = userData?.planType;
   const careerCreation = userData?.careerCreation;
-  const assessmentCreation = userData?.assessmentCreation;
-  const interviewCreation = userData?.interviewCreation;
-  const alertCreation = userData?.alertCreation;
+  //const assessmentCreation = userData?.assessmentCreation;
+  //const interviewCreation = userData?.interviewCreation;
+  //const alertCreation = userData?.alertCreation;
+  
+  const isAllowed = canCreateSession(planType, careerCreation);
      
        useEffect(() => {
          if (!userId) return;
@@ -69,6 +94,25 @@ export default function CareerExplorerForm() {
            setUserData(cachedDetails);
          }
        }, []);
+
+useEffect(() => {
+  if (typeof window === 'undefined') return;
+
+  const saveToStorage = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    localStorage.setItem(STEP_STORAGE_KEY, step.toString());
+  };
+
+  // Save on state change
+  saveToStorage();
+
+  // Save when user leaves/unmounts the page
+  window.addEventListener('beforeunload', saveToStorage);
+  return () => {
+    window.removeEventListener('beforeunload', saveToStorage);
+    saveToStorage(); // Final update on unmount
+  };
+}, [formData, step, STORAGE_KEY, STEP_STORAGE_KEY]);
 
   const updateForm = (fields: Partial<CareerExplorerFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }));
@@ -150,9 +194,14 @@ export default function CareerExplorerForm() {
 
     try {
       const response = await careerExplorerApi.createIntakeAndGenerateReport(payload);
+      // Wipe out cached draft data upon successful submission
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STEP_STORAGE_KEY);
+      }
       syncUpdateResponsesAndInvalidateCache();
       setApiResponse(response);
-      router.push('/dashboard');
+      router.push(`/dashboard/career-explorer/reports/${response.data.report.id}`);
     } catch (error: any) {
       console.error('Failed to submit career intake:', error);
       setErrorMessage('An error occurred while exploring your career path. Please try again.');
@@ -316,39 +365,40 @@ export default function CareerExplorerForm() {
               </button>
             ) : (
               <div>
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
-                  hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
-                  items-center gap-2 shadow-lg shadow-indigo-500/25 max-sm:hidden disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <span>Analyzing...</span>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" /> Create Career Deep-Dive
-                    </>
-                  )}
-                </button>
 
-                <button
+               {isAllowed ? (<button
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                   className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
                   hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
-                  items-center gap-2 shadow-lg shadow-indigo-500/25 sm:hidden disabled:opacity-50"
+                  items-center gap-2 shadow-lg shadow-indigo-500/25 disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <span>Analyzing...</span>
                   ) : (
                     <>
-                      <Sparkles className="w-4 h-4" /> Explore Career
+                      <Sparkles className="w-4 h-4" /> Explore Career Path
                     </>
                   )}
-                </button>
+                </button>)
+                :
+                (<button
+                  type="button"
+                  className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
+                  hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
+                  items-center gap-2 shadow-lg shadow-indigo-500/25 opacity-100"
+                >
+                  {isSubmitting ? (
+                    <span>Analyzing...</span>
+                  ) : (
+                    <a href="/dashboard/pricing" target=""  rel="">
+                      <span className='flex flex-row gap-2'>
+                      <Sparkles className="w-4 h-4 mt-0.5" />Upgrade Your Plan
+                      </span>
+                    </a>
+                  )}
+                </button>)}
               </div>
             )}
           </div>

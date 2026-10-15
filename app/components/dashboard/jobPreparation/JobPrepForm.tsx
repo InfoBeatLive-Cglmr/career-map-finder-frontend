@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,6 +24,7 @@ import {
 } from '@/app/utils/job-preparation/interviewSession';
 import { syncUpdateResponsesAndInvalidateCache, userStorage } from '../settings/InvalidateCache';
 import { UserItem } from '@/app/utils/account/updateResponse';
+import { canCreateSession } from '../settings/PlanManagement';
 
 const INITIAL_FORM_DATA: CreateInterviewSessionInput = {
   language: 'English',
@@ -53,18 +53,41 @@ export default function JobPrepForm() {
   const isDark = theme === 'dark';
 
   const userId =  Cookies.get('userId');
-  const [step, setStep] = useState<number>(1);
-  const [formData, setFormData] = useState<CreateInterviewSessionInput>(INITIAL_FORM_DATA);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const userIdCookie = Cookies.get('userId');
+  const STORAGE_KEY = `interviw_draft_${userIdCookie}`;
+  const STEP_STORAGE_KEY = `interview_step_${userIdCookie}`;
+    
+  const [step, setStep] = useState<number>(() => {
+  if (typeof window === 'undefined') return 1;
+  const savedStep = localStorage.getItem(STEP_STORAGE_KEY);
+  return savedStep ? parseInt(savedStep, 10) : 1;
+  });
+    
+  const [formData, setFormData] = useState<CreateInterviewSessionInput>(() => {
+  if (typeof window === 'undefined') return INITIAL_FORM_DATA;
+  const savedData = localStorage.getItem(STORAGE_KEY);
+  if (savedData) {
+    try {
+        return JSON.parse(savedData);
+    } catch (e) {
+        console.error('Failed to parse cached form data', e);
+  }
+    }
+  return INITIAL_FORM_DATA;
+  });
 
   const [userData, setUserData] = useState<UserItem | null>(null);
 
   const planType = userData?.planType;
-  const careerCreation = userData?.careerCreation;
-  const assessmentCreation = userData?.assessmentCreation;
+  //const careerCreation = userData?.careerCreation;
+  //const assessmentCreation = userData?.assessmentCreation;
   const interviewCreation = userData?.interviewCreation;
-  const alertCreation = userData?.alertCreation;
+  //const alertCreation = userData?.alertCreation;
+  
+  const isAllowed = canCreateSession(planType, interviewCreation);
      
        useEffect(() => {
          if (!userId) return;
@@ -75,6 +98,26 @@ export default function JobPrepForm() {
            setUserData(cachedDetails);
          }
        }, []);
+
+  
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+  
+    const saveToStorage = () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+      localStorage.setItem(STEP_STORAGE_KEY, step.toString());
+    };
+  
+    // Save on state change
+    saveToStorage();
+  
+    // Save when user leaves/unmounts the page
+    window.addEventListener('beforeunload', saveToStorage);
+    return () => {
+      window.removeEventListener('beforeunload', saveToStorage);
+      saveToStorage(); // Final update on unmount
+    };
+  }, [formData, step, STORAGE_KEY, STEP_STORAGE_KEY]);
 
   const updateForm = (fields: Partial<CreateInterviewSessionInput>) => {
     setFormData((prev) => ({ ...prev, ...fields }));
@@ -160,8 +203,14 @@ export default function JobPrepForm() {
       };
 
       const response = await interviewSessionApi.createSession(payload);
-      syncUpdateResponsesAndInvalidateCache();
 
+      // Wipe out cached draft data upon successful submission
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STEP_STORAGE_KEY);
+      }
+
+      syncUpdateResponsesAndInvalidateCache();
       if (response && response.data && response.data.id) {
         // Redirect to the live session workspace
         router.push(`/dashboard/job-preparation/interviews/${response.data.id}`);
@@ -362,12 +411,15 @@ export default function JobPrepForm() {
                 Continue <ArrowRight className="w-4 h-4" />
               </button>
             ) : (
-              <button
+               <div>
+              
+              {isAllowed ? (<button
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-blue-500/25 disabled:opacity-50 cursor-pointer"
-              >
+                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
+                hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex items-center 
+                gap-2 shadow-lg shadow-blue-500/25 disabled:opacity-50 cursor-pointer">
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -378,7 +430,21 @@ export default function JobPrepForm() {
                     <Sparkles className="w-4 h-4" /> Start Interview
                   </>
                 )}
-              </button>
+              </button>)
+              :
+              (<button
+                type="button"
+                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
+                hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
+                items-center gap-2 shadow-lg shadow-indigo-500/25 opacity-100">
+              {isSubmitting ? ( <span>Analyzing...</span> ) : (
+                <a href="/dashboard/pricing" target=""  rel="">
+                <span className='flex flex-row gap-2'>
+                <Sparkles className="w-4 h-4 mt-0.5" />Upgrade Your Plan
+                </span></a> )}
+              </button>)}
+
+              </div>
             )}
           </div>
         </div>

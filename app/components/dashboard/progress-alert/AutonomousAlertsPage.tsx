@@ -12,6 +12,7 @@ import { alertApi, CreateAlertInput } from '@/app/utils/account/alert';
 import Cookies from 'js-cookie';
 import { userStorage } from '../settings/InvalidateCache';
 import { UserItem } from '@/app/utils/account/updateResponse';
+import { canCreateSession } from '../settings/PlanManagement';
 
 const INITIAL_FORM_DATA: AlertFormData = {
   userId: `${Cookies.get('userId')}`,
@@ -58,10 +59,12 @@ export default function AutonomousAlertsPage() {
   const [userData, setUserData] = useState<UserItem | null>(null);
 
   const planType = userData?.planType;
-  const careerCreation = userData?.careerCreation;
-  const assessmentCreation = userData?.assessmentCreation;
-  const interviewCreation = userData?.interviewCreation;
+  //const careerCreation = userData?.careerCreation;
+  //const assessmentCreation = userData?.assessmentCreation;
+  //const interviewCreation = userData?.interviewCreation;
   const alertCreation = userData?.alertCreation;
+    
+  const isAllowed = canCreateSession(planType, alertCreation);
      
        useEffect(() => {
          if (!userId) return;
@@ -241,7 +244,8 @@ export default function AutonomousAlertsPage() {
             </AnimatePresence>
 
             {/* Stepper Navigation */}
-            <div className={`mt-6 pt-6 border-t ${ isDark ? ' border-slate-700' :'border-slate-300'} flex items-center justify-between `}>
+            <div className={`mt-6 pt-6 border-t ${ isDark ? ' border-slate-700' :'border-slate-300'} 
+            flex items-center justify-between `}>
               <button
                 type="button"
                 onClick={handlePrev}
@@ -257,19 +261,38 @@ export default function AutonomousAlertsPage() {
                 <ArrowLeft className="w-4 h-4" /> Back
               </button>
 
+              <div>
+                          
+              {isAllowed ? (
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-indigo-600/25 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+                className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs 
+                sm:text-sm font-bold rounded-xl transition-all flex items-center gap-2 
+                shadow-lg shadow-indigo-600/25 disabled:opacity-50 disabled:cursor-not-allowed">
                 {isSubmitting ? (
-                  <span>Activating AI Engine...</span>
+                  <span>Activating Alert...</span>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" /> Create New Alert
                   </>
                 )}
-              </button>
+              </button>)
+              :
+              (<button type="button"
+                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 
+                hover:to-blue-700 text-white text-sm font-bold rounded-xl transition-all flex 
+                items-center gap-2 shadow-lg shadow-indigo-500/25 opacity-100">
+              {isSubmitting ? ( <span>Analyzing...</span> ) : (
+                <a href="/dashboard/pricing" target=""  rel="">
+                <span className='flex flex-row gap-2'>
+                <Sparkles className="w-4 h-4 mt-0.5" />Upgrade Your Plan
+                </span></a> )}
+              </button>)}
+              
+              </div>
+
+
             </div>
           </form>
         )}

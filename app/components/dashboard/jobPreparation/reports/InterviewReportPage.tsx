@@ -330,9 +330,9 @@ export default function InterviewReportPage() {
 
           {/* Radar Performance Scorecard Grid */}
           {report && (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4 mb-6">
               {[
-                { label: 'Technical Mastery', score: report.radarMetrics.technicalProficiency ?? 0, icon: Zap },
+                // { label: 'Technical Mastery', score: report.radarMetrics.technicalProficiency ?? 0, icon: Zap },
                 { label: 'Communication', score: report.radarMetrics.communicationClarity ?? 0, icon: Activity },
                 { label: 'Problem Solving', score: report.radarMetrics.problemSolvingLogic ?? 0, icon: Target },
                 { label: 'Culture & Leadership', score: report.radarMetrics.cultureAndLeadership ?? 0, icon: Briefcase },
@@ -363,11 +363,11 @@ export default function InterviewReportPage() {
           )}
 
           {/* Detailed Performance Metrics Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
             
             {/* Left: Overall Executive Feedback (7 Columns) */}
             <div
-              className={`lg:col-span-7 p-6 rounded-2xl border shadow-xl backdrop-blur-md space-y-6 transition-all ${
+              className={`xl:col-span-7 max-xl:col-span-12 p-6 w-full rounded-2xl border shadow-xl backdrop-blur-md space-y-6 transition-all ${
                 isDark
                   ? 'bg-slate-900/80 border-slate-700 shadow-slate-950/50'
                   : 'bg-white/90 border-slate-300 shadow-slate-200/50'
@@ -451,7 +451,7 @@ export default function InterviewReportPage() {
 
             {/* Right: Category Breakdown Progress Bars (5 Columns) */}
             <div
-              className={`lg:col-span-5 p-6 rounded-2xl border shadow-xl backdrop-blur-md space-y-6 transition-all ${
+              className={`xl:col-span-5 max-xl:col-span-12 p-6 rounded-2xl border shadow-xl backdrop-blur-md space-y-6 transition-all ${
                 isDark
                   ? 'bg-slate-900/80 border-slate-700 shadow-slate-950/50'
                   : 'bg-white/90 border-slate-300 shadow-slate-200/50'
