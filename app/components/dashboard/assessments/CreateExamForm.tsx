@@ -451,7 +451,7 @@ export default function CreateExamForm() {
 
           
                 <div className="grid grid-cols-1 mt-4 sm:grid-cols-2 gap-4">
-                  <div>
+                  {/* <div>
                     <label className="block text-xs font-medium mb-1.5">How many questions you want this exam to have <span className="text-red-500">*</span></label>
                     <input
                       type="number"
@@ -467,7 +467,47 @@ export default function CreateExamForm() {
                         : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
                       }`}
                     />
-                  </div>
+                  </div> */}
+
+  <div>
+    <label className="block text-xs font-medium mb-1.5">
+      How many questions you want this exam to have <span className="text-red-500">*</span>
+    </label>
+    <input
+      type="number"
+      placeholder="e.g 50"
+      value={state.questionCountOverride}
+      required
+      min={1}
+      max={200}
+      onChange={(e) => {
+        const val = e.target.value;
+        
+        // Allow empty string so the user can clear the input and type freely
+        if (val === "") {
+          actions.setQuestionCountOverride(0);
+          return;
+        }
+
+        const num = Number(val);
+        
+        // Clamp the value between 1 and 200
+        if (num > 200) {
+          actions.setQuestionCountOverride(200 as any);
+        } else if (num < 1) {
+          actions.setQuestionCountOverride(1 as any);
+        } else {
+          actions.setQuestionCountOverride(num as any);
+        }
+      }}
+      className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
+        focus:ring-indigo-500 transition ${
+        isDark ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-600' 
+        : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+      }`}
+    />
+  </div>
+
 
                   <div>
                     <label className="block text-xs font-medium mb-1.5">Provide the time limit of this exam (minuets) <span className="text-red-500">*</span></label>
