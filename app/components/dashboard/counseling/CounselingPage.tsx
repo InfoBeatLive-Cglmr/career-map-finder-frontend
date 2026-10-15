@@ -89,14 +89,15 @@ export default function CounselingBookingPage() {
           </div>
 
           <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight">
-            Book Your Strategic Career & Enrolment Counseling
+            Book Your Strategic Career & Enrolment Counselling
           </h1>
           <p
             className={`mt-3 text-xs sm:text-base max-w-2xl mx-auto leading-relaxed ${
               isDark ? 'text-slate-400' : 'text-slate-600'
             }`}
           >
-            Get personalized guidance on university admissions, state quotas, cutoff benchmarks, and tailored career pathways from verified educational mentors.
+            Get personalized guidance on university admissions, state quotas, cutoff benchmarks, 
+            and tailored career pathways from verified educational mentors.
           </p>
         </div>
 
@@ -242,9 +243,10 @@ export default function CounselingBookingPage() {
               <div className="w-16 h-16 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
-              <h2 className="text-2xl font-extrabold mb-2">Counseling Request Received!</h2>
+              <h2 className="text-2xl font-extrabold mb-2">Counselling Request Received!</h2>
               <p className={`text-xs sm:text-sm max-w-lg mx-auto mb-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Our academic lead will review your background and send a confirmation email with your session calendar link within 24 hours.
+                Our academic lead will review your background and send a confirmation email 
+                with your session calendar link within 24 hours.
               </p>
             </motion.div>
           )}

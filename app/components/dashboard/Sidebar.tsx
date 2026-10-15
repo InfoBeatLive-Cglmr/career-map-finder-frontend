@@ -72,7 +72,7 @@ const NAV_ITEMS: NavItem[] = [
     rel:"",
   },
   {
-    title: 'Counseling (Pro)',
+    title: 'Counselling (Pro)',
     href: '/dashboard/counselling',
     icon: Calendar,
     badge: '',

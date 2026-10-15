@@ -458,8 +458,8 @@ export default function CreateExamForm() {
                       placeholder="e.g 50"
                       value={state.questionCountOverride}
                       required
-                      maxLength={200}
-                      minLength={1}
+                      max={200}
+                      min={1}
                       onChange={(e) => actions.setQuestionCountOverride(e.target.value as any)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
