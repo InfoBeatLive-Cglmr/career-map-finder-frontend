@@ -289,11 +289,11 @@ export default function CreateExamForm() {
                 </div>
 
               <label className="block text-xs font-medium mb-1.5">
-                 Target Subject <span className="text-slate-400 font-normal">(Write Only One) 
+                Write Subjects to Practice <span className="text-slate-400 font-normal">
                  <span className="text-red-500">*</span></span>
               </label>
  
-              <input type="text" placeholder="Subject to practice e.g Mathematics" 
+              <input type="text" placeholder="e.g Pysics, Chemistry, Biology, Mathematics" 
               value={state.subject}
               onChange={(e) => actions.setSubject(e.target.value)}
               required
@@ -458,6 +458,8 @@ export default function CreateExamForm() {
                       placeholder="e.g 50"
                       value={state.questionCountOverride}
                       required
+                      maxLength={200}
+                      minLength={1}
                       onChange={(e) => actions.setQuestionCountOverride(e.target.value as any)}
                       className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 
                         focus:ring-indigo-500 transition ${
