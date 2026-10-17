@@ -35,34 +35,41 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileSidebar }) => {
         
       }, []);
 
-const handleLogout = async () => {
+const handleLogout = async (): Promise<void> => {
   try {
-    
-    await logout();
+    const result = await logout();
 
-    const tokenStillExists = Cookies.get('accessToken');
-    const hasLocalData = typeof window !== "undefined" && localStorage.length > 0;
-
-    if (!tokenStillExists && !hasLocalData) {
-      // Safe to route now!
-      router.refresh();
-      router.push("/auth/signin");
-    } else {
-      console.warn("Storage persistence detected, forcing second flush...");
-      
-      // Force second clean pass just in case
-      if (typeof window !== "undefined") {
-        localStorage.clear();
-        sessionStorage.clear();
-      }
-      Cookies.remove('accessToken', { path: '/' });
-      
-      // Now force navigate
-      router.refresh();
-      router.push("/auth/signin");
+    if (!result.success) {
+      console.error("Logout incomplete:", result.message);
+      return;
     }
-  } catch (err) {
-    console.error("Logout failed:", err);
+
+    // Verify the final state before navigating.
+    const tokenStillExists = Cookies.get("accessToken");
+    const refreshTokenStillExists = Cookies.get("refreshToken");
+    const userIdStillExists = Cookies.get("userId");
+    const authFlagStillExists = Cookies.get("isAuthenticated");
+
+    const storageIsNotEmpty =
+      localStorage.length > 0 || sessionStorage.length > 0;
+
+    if (
+      tokenStillExists ||
+      refreshTokenStillExists ||
+      userIdStillExists ||
+      authFlagStillExists ||
+      storageIsNotEmpty
+    ) {
+      console.error(
+        "Logout blocked: some authentication data remains in storage."
+      );
+      return;
+    }
+
+    router.replace("/auth/signin");
+    router.refresh();
+  } catch (error) {
+    console.error("Logout failed:", error);
   }
 };
 

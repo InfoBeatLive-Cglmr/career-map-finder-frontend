@@ -93,29 +93,67 @@ interface LogoutResponse {
 
 export const logout = async (): Promise<{ success: boolean; message?: string }> => {
   try {
-    // 1. Try hitting the backend API logout endpoint
-    const response: AxiosResponse<LogoutResponse> = await axios.post(`${BASE_URL}/account/auth/logout/logout`);
+  
+    try {
+      const response: AxiosResponse<LogoutResponse> = await axios.post(
+        `${BASE_URL}/account/auth/logout/logout`
+      );
 
-    if (response.status === 200) {
-      return { success: true, message: response.data.message };
-    } else {
-      console.error('Error during logout:', response.data.error);
-      throw new Error(response.data.error || 'Failed to logout');
+      if (response.status !== 200) {
+        console.warn("Backend logout was unsuccessful.");
+      }
+    } catch (error) {
+      console.warn(
+        "Backend logout failed. Continuing with local cleanup.",
+        error
+      );
     }
-  } catch (error: any) {
-    console.error('Error during logout (API failed, continuing client cleanup):', error.message);
-    // Even if the backend fails, we still want local cleanup to succeed
-    return { success: true, message: 'Logged out locally' };
-  } finally {
-    // 2. Perform aggressive client-side cleanup
-    Cookies.remove('accessToken', { path: '/' });
-    Cookies.remove('refreshToken', { path: '/' });
-    Cookies.remove('userId', { path: '/' });
-    Cookies.remove('isAuthenticated', { path: '/' });
 
-    if (typeof window !== "undefined") {
-      localStorage.clear();
-      sessionStorage.clear();
+    if (typeof window === "undefined") {
+      throw new Error("Logout must be executed in the browser.");
     }
+
+    const cookiesToRemove = [
+      "accessToken",
+      "refreshToken",
+      "userId",
+      "isAuthenticated",
+    ];
+
+    cookiesToRemove.forEach((name) => {
+      Cookies.remove(name, { path: "/" });
+    });
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    const remainingCookies = cookiesToRemove.filter(
+      (name) => Cookies.get(name) !== undefined
+    );
+
+    if (
+      localStorage.length > 0 ||
+      sessionStorage.length > 0 ||
+      remainingCookies.length > 0
+    ) {
+      throw new Error(
+        `Logout cleanup incomplete. Remaining cookies: ${remainingCookies.join(", ")}`
+      );
+    }
+
+    return {
+      success: true,
+      message: "Logged out successfully.",
+    };
+  } catch (error) {
+    console.error("Logout cleanup failed:", error);
+
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to complete logout.",
+    };
   }
 };
