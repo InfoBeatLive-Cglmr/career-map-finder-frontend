@@ -31,7 +31,7 @@ const SignUp: React.FC = () => {
       const isAuthenticated = Cookies.get('isAuthenticated');
 
       if (isAuthenticated && userId && token) {
-        router.push('/dashboard');
+       // router.push('/dashboard');
       } 
     
   }, []);

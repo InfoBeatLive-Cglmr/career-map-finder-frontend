@@ -21,6 +21,8 @@ export const userStorage = {
   clearUserData(userId: string): void {
     if (typeof window === "undefined") return;
     localStorage.removeItem(`${USER_RESPONSE_KEY_PREFIX}${userId}`);
+    localStorage.clear();
+    sessionStorage.clear();
   }
 };
 
