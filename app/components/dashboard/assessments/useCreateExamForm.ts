@@ -174,7 +174,7 @@ export function useCreateExamForm() {
       router.push(`/dashboard/assessments/exams/${response.data.session.id}`);
     } catch (err: any) {
       console.error('Error creating exam session:', err);
-      setApiError('Failed to create exam session.');
+      setApiError(`Failed to create exam session:${err}`);
     } finally {
       setIsSubmitting(false);
     }
